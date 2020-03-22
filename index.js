@@ -69,7 +69,7 @@ exports.getAsyncBoards = functions.https.onRequest(async (req, res) => {
   try {
     const dataSnapshot = await admin
       .firestore()
-      .collection('boards')
+      .collection('boardes')
       .get();
 
     let boards = [];
@@ -77,7 +77,7 @@ exports.getAsyncBoards = functions.https.onRequest(async (req, res) => {
     dataSnapshot.forEach(doc => {
       boards.push(doc.data());
     });
-    return res.json(users);
+    return res.json(boards);
   } catch (err) {
     console.log(err.message);
   }
