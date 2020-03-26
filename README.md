@@ -5,7 +5,7 @@
 Before anything else, make a Firebase project directory with necessary files:
 
 - Install Firebase cli if you don't already have it
-- `firebase login` (you may need to logout first, if there's a problem)
+- `firebase login`
 - `mddir myFirebaseProject`
 - `cd myFirebaseProject`
 - `firebase init`
@@ -42,9 +42,7 @@ You can now run `firebase deploy` to use the deployed functions or you can test 
     "ecmaVersion": 2019,
     "sourceType": "module"
   },
-  // eslint lets you extend existing rule sets:
   "extends": ["eslint:recommended", "eslint-config-prettier"],
-  // override or add to the extended rulesets:
   "rules": {
     "strict": ["error", "never"],
     "no-unused-vars": [
