@@ -3,6 +3,8 @@
  *
  * https://us-east1-funfunretro.cloudfunctions.net/api/boards
  */
+
+//
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
@@ -13,10 +15,18 @@ admin.initializeApp({
   databaseURL: 'https://funfunretro.firebaseio.com',
 });
 
+const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const app = express();
 
-exports.api = functions.region('us-east1').https.onRequest(app);
+const { typeDefs } = require('./schema');
+const resolvers = require('./resolvers');
+
+const server = new ApolloServer({ typeDefs, resolvers });
+server.applyMiddleware({ app, path: '/', cors: true });
+exports.graphql = functions.region('us-east1').https.onRequest(app);
+
+// exports.api = functions.region('us-east1').https.onRequest(app);
 
 app.get('/boards', (req, res) => {
   admin
@@ -52,6 +62,9 @@ app.get('/columns', (req, res) => {
     });
 });
 
+// get a board's information and also its columns, version 1
+// - in which we first get all columns that match a given boardId
+// - then we get the board data based on that id
 app.get('/boards/:boardId', (req, res) => {
   let columns = [];
   admin
