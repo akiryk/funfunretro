@@ -112,6 +112,68 @@ module.exports = {
       }
     },
   },
+  Mutation: {
+    createBoard: async (_, args) => {
+      try {
+        const newBoard = await admin
+          .firestore()
+          .collection('boards')
+          .add({
+            name: args.name,
+            desc: args.desc,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            userIds: [],
+            columns: [],
+          });
+        return {
+          name: args.name,
+          desc: args.desc,
+          id: newBoard.id,
+        };
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    createColumn: async (_, args) => {
+      try {
+        const newColumn = await admin
+          .firestore()
+          .collection('columns')
+          .add({
+            name: args.name,
+            boardId: args.boardId,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+        return {
+          name: args.name,
+          id: newColumn.id,
+        };
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    createComment: async (_, args) => {
+      try {
+        const comment = {
+          boardId: args.boardId,
+          columnId: args.columnId,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          text: args.text,
+          userId: args.userId,
+        };
+        const newComment = await admin
+          .firestore()
+          .collection('comments')
+          .add(comment);
+        return {
+          ...comment,
+          id: newComment.id,
+        };
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
   Board: {
     users: async board => {
       try {

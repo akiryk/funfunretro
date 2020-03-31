@@ -42,6 +42,22 @@ const typeDefs = gql`
     users: [User]!
     user(id: ID!): User
   }
+
+  input BoardInput {
+    name: String
+    desc: String
+  }
+
+  type Mutation {
+    createBoard(name: String!, desc: String!): Board!
+    createColumn(name: String!, boardId: String!): Column!
+    createComment(
+      text: String!
+      boardId: String!
+      columnId: String!
+      userId: String!
+    ): Comment!
+  }
 `;
 
 module.exports = { typeDefs };

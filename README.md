@@ -70,3 +70,52 @@ You can now run `firebase deploy` to use the deployed functions or you can test 
   "trailingComma": "all"
 }
 ```
+
+### Queries
+
+- boards
+- board
+- columns
+- column
+- users
+- user
+- comments
+- comment
+
+Example format
+
+```
+query getBoards {
+  boards {
+    name
+    desc
+    id
+  }
+}
+
+query getColumnsByBoard {
+  board(id:"fSOyvOyR3k1owjAKv88o") {
+    name
+    desc
+    columns {
+      name
+    }
+  }
+}
+```
+
+### Mutations
+
+```gql
+mutation {
+  createComment(
+    text: "Here is a comment for you?"
+    boardId: "123"
+    columnId: "ADS"
+    userId: "Ssdfsdfdsf"
+  ) {
+    id
+    text
+  }
+}
+```
