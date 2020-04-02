@@ -9,6 +9,7 @@ Before anything else, make a Firebase project directory with necessary files:
 - `mddir myFirebaseProject`
 - `cd myFirebaseProject`
 - `firebase init`
+- Before going further: it saves time not to install NPM dependencies during setup process.
 - Select "use functions"
 - Select to use an existing project if you have access privileges to funfunretro; otherwise, create a new one.
 - Use JS or TS; use eslint or roll your own
@@ -70,6 +71,14 @@ You can now run `firebase deploy` to use the deployed functions or you can test 
   "trailingComma": "all"
 }
 ```
+
+### Authentication
+
+- Go to Firebase Project Settings/Authentication and enable email signin
+- Go to Firebase Project Settings/General and click the `</>` web platform button to create an app
+  - Copy the config settings and put it in your project
+- `npm install firebase` to your project
+- Use `firebase.auth().createUserWithEmailAndPassword(email, password)` where email and password are data from client.
 
 ### Queries
 
