@@ -1,0 +1,309 @@
+[debug] [2020-04-03T11:41:51.120Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:41:51.122Z] Command:       /usr/local/bin/firebase /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase serve
+[debug] [2020-04-03T11:41:51.123Z] CLI Version:   8.0.0
+[debug] [2020-04-03T11:41:51.123Z] Platform:      darwin
+[debug] [2020-04-03T11:41:51.123Z] Node Version:  v12.16.1
+[debug] [2020-04-03T11:41:51.124Z] Time:          Fri Apr 03 2020 07:41:51 GMT-0400 (Eastern Daylight Time)
+[debug] [2020-04-03T11:41:51.124Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:41:51.124Z] 
+[debug] [2020-04-03T11:41:51.134Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-03T11:41:51.135Z] > authorizing via signed-in user
+[debug] [2020-04-03T11:41:51.135Z] [iam] checking project funfunretro for permissions ["firebase.projects.get"]
+[debug] [2020-04-03T11:41:51.136Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/funfunretro:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-04-03T11:41:51.407Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:41:51 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=161","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-04-03T11:41:51.409Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/funfunretro  
+ 
+[debug] [2020-04-03T11:41:51.643Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:41:51 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from '/Users/akiryk/Documents/Projects/funfunretro'...
+[info] 
+[warn] ⚠  Your requested "node" version "8" doesn't match your global version "12"
+[info] ✔  functions: functions emulator started at http://localhost:5000
+[info] i  functions: Watching "/Users/akiryk/Documents/Projects/funfunretro/functions" for Cloud Functions...
+[debug] [2020-04-03T11:41:51.673Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-04-03T11:41:51.673Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-04-03T11:41:51.673Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-04-03T11:41:51.674Z] [worker-~diagnostic~-b81621de-9db5-4a41-9da7-761c91b1ed15]: Assigning socketPath: /var/folders/z0/xv2sv8v90rsfgk__hwr6z6bc0000gp/T/fire_emu_5628.sock 
+[debug] [2020-04-03T11:41:51.674Z] [worker-~diagnostic~-b81621de-9db5-4a41-9da7-761c91b1ed15]: BUSY 
+[debug] [2020-04-03T11:41:52.008Z] [runtime-status] [5628] Functions runtime initialized. {"cwd":"/Users/akiryk/Documents/Projects/funfunretro/functions","node_version":"12.16.1"} 
+[debug] [2020-04-03T11:41:52.009Z] [runtime-status] [5628] Disabled runtime features: undefined 
+[debug] [2020-04-03T11:41:52.011Z] [runtime-status] [5628] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:41:52.012Z] [runtime-status] [5628] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:41:52.014Z] [runtime-status] [5628] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-04-03T11:41:52.060Z] [runtime-status] [5628] Checked functions.config() {"config":{}} 
+[debug] [2020-04-03T11:41:52.061Z] [runtime-status] [5628] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:41:52.061Z] [runtime-status] [5628] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:41:52.062Z] [runtime-status] [5628] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:41:52.062Z] [runtime-status] [5628] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"}} 
+[warn] ⚠  Error: Failed to load gRPC binary module because it was not installed for the current system
+Expected directory: node-v72-darwin-x64-unknown
+Found: [node-v79-darwin-x64-unknown]
+This problem can often be fixed by running "npm rebuild" on the current system
+Original error: Cannot find module '/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/node/extension_binary/node-v72-darwin-x64-unknown/grpc_node.node'
+Require stack:
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/index.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/@firebase/firestore/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/index.js
+- /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorRuntime.js
+1) If you want to compile the package/file into executable, please pay attention to compilation warnings and specify a literal in 'require' call. 2) If you don't want to compile the package/file into executable and want to 'require' it from filesystem (likely plugin), specify an absolute path in 'require' call using process.cwd() or process.execPath.
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js:53:17)
+    at Module._compile (internal/modules/cjs/loader.js:1156:30)
+    at Module._compile (pkg/prelude/bootstrap.js:1285:32)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1176:10)
+    at Module.load (internal/modules/cjs/loader.js:1000:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:899:14)
+    at Module.require (internal/modules/cjs/loader.js:1042:19)
+    at Module.require (pkg/prelude/bootstrap.js:1229:31)
+    at require (internal/modules/cjs/helpers.js:77:18)
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js:144:12)
+[warn] ⚠  We were unable to load your functions code. (see above)
+[debug] [2020-04-03T11:41:52.255Z] [worker-~diagnostic~-b81621de-9db5-4a41-9da7-761c91b1ed15]: exited 
+[debug] [2020-04-03T11:41:52.255Z] [worker-~diagnostic~-b81621de-9db5-4a41-9da7-761c91b1ed15]: FINISHED 
+[debug] [2020-04-03T11:42:42.633Z] File /Users/akiryk/Documents/Projects/funfunretro/functions/index.js changed, reloading triggers 
+[debug] [2020-04-03T11:42:43.637Z] [worker-pool] Cleaned up workers for ~diagnostic~: 1 --> 0 
+[debug] [2020-04-03T11:42:43.643Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-04-03T11:42:43.643Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-04-03T11:42:43.644Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-04-03T11:42:43.644Z] [worker-~diagnostic~-38a65119-35f2-4f6d-9475-0d7a95bd20cd]: Assigning socketPath: /var/folders/z0/xv2sv8v90rsfgk__hwr6z6bc0000gp/T/fire_emu_5655.sock 
+[debug] [2020-04-03T11:42:43.644Z] [worker-~diagnostic~-38a65119-35f2-4f6d-9475-0d7a95bd20cd]: BUSY 
+[debug] [2020-04-03T11:42:44.149Z] [runtime-status] [5655] Functions runtime initialized. {"cwd":"/Users/akiryk/Documents/Projects/funfunretro/functions","node_version":"12.16.1"} 
+[debug] [2020-04-03T11:42:44.151Z] [runtime-status] [5655] Disabled runtime features: undefined 
+[debug] [2020-04-03T11:42:44.156Z] [runtime-status] [5655] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:42:44.157Z] [runtime-status] [5655] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:42:44.159Z] [runtime-status] [5655] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-04-03T11:42:44.207Z] [runtime-status] [5655] Checked functions.config() {"config":{}} 
+[debug] [2020-04-03T11:42:44.208Z] [runtime-status] [5655] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:42:44.209Z] [runtime-status] [5655] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:42:44.209Z] [runtime-status] [5655] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:42:44.209Z] [runtime-status] [5655] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"}} 
+[warn] ⚠  Error: Failed to load gRPC binary module because it was not installed for the current system
+Expected directory: node-v72-darwin-x64-unknown
+Found: [node-v79-darwin-x64-unknown]
+This problem can often be fixed by running "npm rebuild" on the current system
+Original error: Cannot find module '/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/node/extension_binary/node-v72-darwin-x64-unknown/grpc_node.node'
+Require stack:
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/index.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/@firebase/firestore/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/index.js
+- /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorRuntime.js
+1) If you want to compile the package/file into executable, please pay attention to compilation warnings and specify a literal in 'require' call. 2) If you don't want to compile the package/file into executable and want to 'require' it from filesystem (likely plugin), specify an absolute path in 'require' call using process.cwd() or process.execPath.
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js:53:17)
+    at Module._compile (internal/modules/cjs/loader.js:1156:30)
+    at Module._compile (pkg/prelude/bootstrap.js:1285:32)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1176:10)
+    at Module.load (internal/modules/cjs/loader.js:1000:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:899:14)
+    at Module.require (internal/modules/cjs/loader.js:1042:19)
+    at Module.require (pkg/prelude/bootstrap.js:1229:31)
+    at require (internal/modules/cjs/helpers.js:77:18)
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js:144:12)
+[warn] ⚠  We were unable to load your functions code. (see above)
+[debug] [2020-04-03T11:42:44.404Z] [worker-~diagnostic~-38a65119-35f2-4f6d-9475-0d7a95bd20cd]: exited 
+[debug] [2020-04-03T11:42:44.404Z] [worker-~diagnostic~-38a65119-35f2-4f6d-9475-0d7a95bd20cd]: FINISHED 
+[debug] [2020-04-03T11:43:18.061Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:43:18.063Z] Command:       /usr/local/bin/firebase /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase serve
+[debug] [2020-04-03T11:43:18.064Z] CLI Version:   8.0.0
+[debug] [2020-04-03T11:43:18.064Z] Platform:      darwin
+[debug] [2020-04-03T11:43:18.064Z] Node Version:  v12.16.1
+[debug] [2020-04-03T11:43:18.070Z] Time:          Fri Apr 03 2020 07:43:18 GMT-0400 (Eastern Daylight Time)
+[debug] [2020-04-03T11:43:18.070Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:43:18.071Z] 
+[debug] [2020-04-03T11:43:18.081Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-03T11:43:18.081Z] > authorizing via signed-in user
+[debug] [2020-04-03T11:43:18.081Z] [iam] checking project funfunretro for permissions ["firebase.projects.get"]
+[debug] [2020-04-03T11:43:18.083Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/funfunretro:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-04-03T11:43:18.371Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:43:18 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=165","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-04-03T11:43:18.373Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/funfunretro  
+ 
+[debug] [2020-04-03T11:43:18.605Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:43:18 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from '/Users/akiryk/Documents/Projects/funfunretro'...
+[info] 
+[warn] ⚠  Your requested "node" version "8" doesn't match your global version "12"
+[info] ✔  functions: functions emulator started at http://localhost:5000
+[info] i  functions: Watching "/Users/akiryk/Documents/Projects/funfunretro/functions" for Cloud Functions...
+[debug] [2020-04-03T11:43:18.635Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-04-03T11:43:18.635Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-04-03T11:43:18.635Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-04-03T11:43:18.636Z] [worker-~diagnostic~-981f9dea-3487-437f-98e6-9434a506d985]: Assigning socketPath: /var/folders/z0/xv2sv8v90rsfgk__hwr6z6bc0000gp/T/fire_emu_5727.sock 
+[debug] [2020-04-03T11:43:18.636Z] [worker-~diagnostic~-981f9dea-3487-437f-98e6-9434a506d985]: BUSY 
+[debug] [2020-04-03T11:43:18.967Z] [runtime-status] [5727] Functions runtime initialized. {"cwd":"/Users/akiryk/Documents/Projects/funfunretro/functions","node_version":"12.16.1"} 
+[debug] [2020-04-03T11:43:18.968Z] [runtime-status] [5727] Disabled runtime features: undefined 
+[debug] [2020-04-03T11:43:18.973Z] [runtime-status] [5727] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:43:18.974Z] [runtime-status] [5727] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:43:18.975Z] [runtime-status] [5727] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-04-03T11:43:19.022Z] [runtime-status] [5727] Checked functions.config() {"config":{}} 
+[debug] [2020-04-03T11:43:19.023Z] [runtime-status] [5727] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:43:19.024Z] [runtime-status] [5727] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:43:19.024Z] [runtime-status] [5727] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:43:19.024Z] [runtime-status] [5727] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"}} 
+[warn] ⚠  Error: Failed to load gRPC binary module because it was not installed for the current system
+Expected directory: node-v72-darwin-x64-unknown
+Found: [node-v79-darwin-x64-unknown]
+This problem can often be fixed by running "npm rebuild" on the current system
+Original error: Cannot find module '/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/node/extension_binary/node-v72-darwin-x64-unknown/grpc_node.node'
+Require stack:
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/index.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/@firebase/firestore/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/index.js
+- /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorRuntime.js
+1) If you want to compile the package/file into executable, please pay attention to compilation warnings and specify a literal in 'require' call. 2) If you don't want to compile the package/file into executable and want to 'require' it from filesystem (likely plugin), specify an absolute path in 'require' call using process.cwd() or process.execPath.
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js:53:17)
+    at Module._compile (internal/modules/cjs/loader.js:1156:30)
+    at Module._compile (pkg/prelude/bootstrap.js:1285:32)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1176:10)
+    at Module.load (internal/modules/cjs/loader.js:1000:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:899:14)
+    at Module.require (internal/modules/cjs/loader.js:1042:19)
+    at Module.require (pkg/prelude/bootstrap.js:1229:31)
+    at require (internal/modules/cjs/helpers.js:77:18)
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js:144:12)
+[warn] ⚠  We were unable to load your functions code. (see above)
+[debug] [2020-04-03T11:43:19.198Z] [worker-~diagnostic~-981f9dea-3487-437f-98e6-9434a506d985]: exited 
+[debug] [2020-04-03T11:43:19.198Z] [worker-~diagnostic~-981f9dea-3487-437f-98e6-9434a506d985]: FINISHED 
+[debug] [2020-04-03T11:44:10.469Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:44:10.471Z] Command:       /usr/local/bin/firebase /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase serve
+[debug] [2020-04-03T11:44:10.471Z] CLI Version:   8.0.0
+[debug] [2020-04-03T11:44:10.471Z] Platform:      darwin
+[debug] [2020-04-03T11:44:10.471Z] Node Version:  v12.16.1
+[debug] [2020-04-03T11:44:10.479Z] Time:          Fri Apr 03 2020 07:44:10 GMT-0400 (Eastern Daylight Time)
+[debug] [2020-04-03T11:44:10.479Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:44:10.479Z] 
+[debug] [2020-04-03T11:44:10.491Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-03T11:44:10.491Z] > authorizing via signed-in user
+[debug] [2020-04-03T11:44:10.492Z] [iam] checking project funfunretro for permissions ["firebase.projects.get"]
+[debug] [2020-04-03T11:44:10.493Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/funfunretro:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-04-03T11:44:10.960Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:44:10 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=279","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-04-03T11:44:10.961Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/funfunretro  
+ 
+[debug] [2020-04-03T11:44:11.180Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:44:11 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from '/Users/akiryk/Documents/Projects/funfunretro'...
+[info] 
+[warn] ⚠  Your requested "node" version "8" doesn't match your global version "12"
+[info] ✔  functions: functions emulator started at http://localhost:5000
+[info] i  functions: Watching "/Users/akiryk/Documents/Projects/funfunretro/functions" for Cloud Functions...
+[debug] [2020-04-03T11:44:11.210Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-04-03T11:44:11.210Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-04-03T11:44:11.210Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-04-03T11:44:11.211Z] [worker-~diagnostic~-a8236641-2a26-44df-9c4c-9201af348189]: Assigning socketPath: /var/folders/z0/xv2sv8v90rsfgk__hwr6z6bc0000gp/T/fire_emu_5802.sock 
+[debug] [2020-04-03T11:44:11.211Z] [worker-~diagnostic~-a8236641-2a26-44df-9c4c-9201af348189]: BUSY 
+[debug] [2020-04-03T11:44:11.538Z] [runtime-status] [5802] Functions runtime initialized. {"cwd":"/Users/akiryk/Documents/Projects/funfunretro/functions","node_version":"12.16.1"} 
+[debug] [2020-04-03T11:44:11.539Z] [runtime-status] [5802] Disabled runtime features: undefined 
+[debug] [2020-04-03T11:44:11.541Z] [runtime-status] [5802] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:44:11.542Z] [runtime-status] [5802] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:44:11.544Z] [runtime-status] [5802] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-04-03T11:44:11.575Z] [runtime-status] [5802] Checked functions.config() {"config":{}} 
+[debug] [2020-04-03T11:44:11.576Z] [runtime-status] [5802] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:44:11.577Z] [runtime-status] [5802] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:44:11.577Z] [runtime-status] [5802] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:44:11.577Z] [runtime-status] [5802] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"}} 
+[warn] ⚠  Error: Failed to load gRPC binary module because it was not installed for the current system
+Expected directory: node-v72-darwin-x64-unknown
+Found: [node-v57-darwin-x64-unknown]
+This problem can often be fixed by running "npm rebuild" on the current system
+Original error: Cannot find module '/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/node/extension_binary/node-v72-darwin-x64-unknown/grpc_node.node'
+Require stack:
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/index.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/@firebase/firestore/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/index.js
+- /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorRuntime.js
+1) If you want to compile the package/file into executable, please pay attention to compilation warnings and specify a literal in 'require' call. 2) If you don't want to compile the package/file into executable and want to 'require' it from filesystem (likely plugin), specify an absolute path in 'require' call using process.cwd() or process.execPath.
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js:53:17)
+    at Module._compile (internal/modules/cjs/loader.js:1156:30)
+    at Module._compile (pkg/prelude/bootstrap.js:1285:32)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1176:10)
+    at Module.load (internal/modules/cjs/loader.js:1000:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:899:14)
+    at Module.require (internal/modules/cjs/loader.js:1042:19)
+    at Module.require (pkg/prelude/bootstrap.js:1229:31)
+    at require (internal/modules/cjs/helpers.js:77:18)
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js:144:12)
+[warn] ⚠  We were unable to load your functions code. (see above)
+[debug] [2020-04-03T11:44:11.712Z] [worker-~diagnostic~-a8236641-2a26-44df-9c4c-9201af348189]: exited 
+[debug] [2020-04-03T11:44:11.712Z] [worker-~diagnostic~-a8236641-2a26-44df-9c4c-9201af348189]: FINISHED 
+[debug] [2020-04-03T11:44:34.482Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:44:34.484Z] Command:       /usr/local/bin/firebase /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase serve
+[debug] [2020-04-03T11:44:34.485Z] CLI Version:   8.0.0
+[debug] [2020-04-03T11:44:34.485Z] Platform:      darwin
+[debug] [2020-04-03T11:44:34.485Z] Node Version:  v12.16.1
+[debug] [2020-04-03T11:44:34.486Z] Time:          Fri Apr 03 2020 07:44:34 GMT-0400 (Eastern Daylight Time)
+[debug] [2020-04-03T11:44:34.486Z] ----------------------------------------------------------------------
+[debug] [2020-04-03T11:44:34.486Z] 
+[debug] [2020-04-03T11:44:34.494Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-03T11:44:34.495Z] > authorizing via signed-in user
+[debug] [2020-04-03T11:44:34.495Z] [iam] checking project funfunretro for permissions ["firebase.projects.get"]
+[debug] [2020-04-03T11:44:34.497Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/funfunretro:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2020-04-03T11:44:34.668Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:44:34 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=52","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-04-03T11:44:34.670Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/funfunretro  
+ 
+[debug] [2020-04-03T11:44:34.867Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Fri, 03 Apr 2020 11:44:34 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Serving from '/Users/akiryk/Documents/Projects/funfunretro'...
+[info] 
+[warn] ⚠  Your requested "node" version "8" doesn't match your global version "12"
+[info] ✔  functions: functions emulator started at http://localhost:5000
+[info] i  functions: Watching "/Users/akiryk/Documents/Projects/funfunretro/functions" for Cloud Functions...
+[debug] [2020-04-03T11:44:34.897Z] [worker-pool] addWorker(~diagnostic~) 
+[debug] [2020-04-03T11:44:34.897Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 
+[debug] [2020-04-03T11:44:34.897Z] [worker-pool] submitWork(triggerId=) 
+[debug] [2020-04-03T11:44:34.898Z] [worker-~diagnostic~-01104f89-d516-4de4-a22f-8c058acfa6df]: Assigning socketPath: /var/folders/z0/xv2sv8v90rsfgk__hwr6z6bc0000gp/T/fire_emu_5924.sock 
+[debug] [2020-04-03T11:44:34.898Z] [worker-~diagnostic~-01104f89-d516-4de4-a22f-8c058acfa6df]: BUSY 
+[debug] [2020-04-03T11:44:35.225Z] [runtime-status] [5924] Functions runtime initialized. {"cwd":"/Users/akiryk/Documents/Projects/funfunretro/functions","node_version":"12.16.1"} 
+[debug] [2020-04-03T11:44:35.226Z] [runtime-status] [5924] Disabled runtime features: undefined 
+[debug] [2020-04-03T11:44:35.230Z] [runtime-status] [5924] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:44:35.231Z] [runtime-status] [5924] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:44:35.233Z] [runtime-status] [5924] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] 
+[debug] [2020-04-03T11:44:35.261Z] [runtime-status] [5924] Checked functions.config() {"config":{}} 
+[debug] [2020-04-03T11:44:35.262Z] [runtime-status] [5924] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:44:35.263Z] [runtime-status] [5924] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"} 
+[debug] [2020-04-03T11:44:35.263Z] [runtime-status] [5924] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-functions/lib/index.js"} 
+[debug] [2020-04-03T11:44:35.263Z] [runtime-status] [5924] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.10.0","resolution":"/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase-admin/lib/index.js"}} 
+[warn] ⚠  Error: Failed to load gRPC binary module because it was not installed for the current system
+Expected directory: node-v72-darwin-x64-unknown
+Found: [node-v57-darwin-x64-unknown]
+This problem can often be fixed by running "npm rebuild" on the current system
+Original error: Cannot find module '/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/node/extension_binary/node-v72-darwin-x64-unknown/grpc_node.node'
+Require stack:
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/index.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/@firebase/firestore/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/firebase/dist/index.node.cjs.js
+- /Users/akiryk/Documents/Projects/funfunretro/functions/index.js
+- /Users/akiryk/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/emulator/functionsEmulatorRuntime.js
+1) If you want to compile the package/file into executable, please pay attention to compilation warnings and specify a literal in 'require' call. 2) If you don't want to compile the package/file into executable and want to 'require' it from filesystem (likely plugin), specify an absolute path in 'require' call using process.cwd() or process.execPath.
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/grpc_extension.js:53:17)
+    at Module._compile (internal/modules/cjs/loader.js:1156:30)
+    at Module._compile (pkg/prelude/bootstrap.js:1285:32)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1176:10)
+    at Module.load (internal/modules/cjs/loader.js:1000:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:899:14)
+    at Module.require (internal/modules/cjs/loader.js:1042:19)
+    at Module.require (pkg/prelude/bootstrap.js:1229:31)
+    at require (internal/modules/cjs/helpers.js:77:18)
+    at Object.<anonymous> (/Users/akiryk/Documents/Projects/funfunretro/functions/node_modules/grpc/src/client_interceptors.js:144:12)
+[warn] ⚠  We were unable to load your functions code. (see above)
+[debug] [2020-04-03T11:44:35.396Z] [worker-~diagnostic~-01104f89-d516-4de4-a22f-8c058acfa6df]: exited 
+[debug] [2020-04-03T11:44:35.397Z] [worker-~diagnostic~-01104f89-d516-4de4-a22f-8c058acfa6df]: FINISHED 

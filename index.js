@@ -8,6 +8,10 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
+const firebase = require('firebase');
+const config = require('../utils/config.js');
+firebase.initializeApp(config);
+
 var serviceAccount = require('../serviceAccountKey.json');
 
 admin.initializeApp({
@@ -23,20 +27,21 @@ const app = express();
 const cors = require('cors');
 app.use(cors());
 
-const { typeDefs } = require('./schema');
-const resolvers = require('./resolvers');
+// const { typeDefs } = require('./schema');
+// const resolvers = require('./resolvers');
 
-const server = new ApolloServer({ typeDefs, resolvers });
-server.applyMiddleware({ app, path: '/', cors: true });
+// const server = new ApolloServer({ typeDefs, resolvers });
+// server.applyMiddleware({ app, path: '/', cors: true });
 
 // Graphql endpoint
-exports.graphql = functions.region('us-east1').https.onRequest(app);
+// exports.graphql = functions.region('us-east1').https.onRequest(app);
 
 // rest api
 exports.api = functions.region('us-east1').https.onRequest(app);
 
 // Test signup
 app.post('/signup', (req, res) => {
+  console.log('SIGN UP!');
   const newUser = {
     email: req.body.email,
     userName: req.body.userName,
