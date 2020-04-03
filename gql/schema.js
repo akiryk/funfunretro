@@ -26,7 +26,7 @@ const typeDefs = gql`
     user: User
   }
   type User {
-    username: String
+    userName: String
     boardIds: [String]
     boards: [Board]
     comments: [Comment]
