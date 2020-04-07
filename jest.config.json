@@ -1,0 +1,6 @@
+{
+  "roots": ["<rootDir>/tests"],
+  "testRegex": "/tests/.*.spec.(js|ts|tsx)?$",
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+  "testTimeout": 8000
+}

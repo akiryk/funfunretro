@@ -74,11 +74,32 @@ You can now run `firebase deploy` to use the deployed functions or you can test 
 
 ### Authentication
 
-- Go to Firebase Project Settings/Authentication and enable email signin
-- Go to Firebase Project Settings/General and click the `</>` web platform button to create an app
+Todo: Need to implement some kind of authentication because as of now:
+
+- no auth is developed for this app
+- there is a user type with username but that's about it
+- the bare bones of creating auth are taken from the classed video series
+
+Consider these alternatives
+
+- Firebase has a plug and play authentication solution.
+
+* Go to Firebase Project Settings/Authentication and enable email signin
+* Go to Firebase Project Settings/General and click the `</>` web platform button to create an app
   - Copy the config settings and put it in your project
-- `npm install firebase` to your project
-- Use `firebase.auth().createUserWithEmailAndPassword(email, password)` where email and password are data from client.
+* `npm install firebase` to your project
+* Use `firebase.auth().createUserWithEmailAndPassword(email, password)` where email and password are data from client.
+
+### Resolvers
+
+To create a new resolver
+
+- Create or modify any typeDefs in `gql/schema`
+- Add new resolver function in the appropriate place,
+  - `gql/mutations/comment_mutations`
+  - or a new file for a new type
+- Import it into `gql/resolvers.js`
+- test in Graphiql and/or write e2e tests
 
 ### Queries
 
@@ -114,6 +135,33 @@ query getColumnsByBoard {
 ```
 
 ### Mutations
+
+**Graphiql**
+
+```
+// In the main query builder:
+
+mutation createComment($input:CommentInput) {
+  createComment(input:$input){
+    boardId
+    columnId
+    userId
+    text
+    id
+  }
+}
+
+---------------------------------------------
+In the Query Variables section
+{
+  "input": {
+    "boardId": "07hqwKZjcMoPwagAmgfi",
+    "columnId":"23234234",
+    "userId":"ADKDJDF",
+    "text":"This comment added from graphiql"
+  }
+}
+```
 
 ```gql
 mutation {
