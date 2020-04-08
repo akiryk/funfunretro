@@ -19,10 +19,10 @@ exports.api = functions.region('us-east1').https.onRequest(app);
 server.applyMiddleware({ app, path: '/graphql', cors: true });
 
 // Rest
-const { signup } = require('./handlers/users');
-const { getBoards } = require('./handlers/boards');
-const { getColumns } = require('./handlers/columns');
+// const { signup } = require('./handlers/users');
+// const { getBoards } = require('./handlers/boards');
+// const { getColumns } = require('./handlers/columns');
 
-app.post('/signup', signup);
-app.get('/boards', getBoards);
-app.get('/columns', getColumns);
+// app.post('/signup', signup);
+// app.get('/boards', getBoards);
+// app.get('/columns', getColumns);

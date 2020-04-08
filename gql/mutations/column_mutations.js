@@ -2,7 +2,6 @@
  * Column Mutations
  */
 const { db, admin } = require('../../utils/admin');
-const { SUCCESSFUL, UNSUCCESSFUL } = require('../../utils/constants');
 
 exports.createColumn = async (_, { input: args }) => {
   try {
@@ -22,6 +21,11 @@ exports.createColumn = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      code: '400',
+      success: false,
+      message: 'Unable to create a new column',
+    };
   }
 };
 
@@ -62,6 +66,11 @@ exports.updateColumn = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      code: '400',
+      success: false,
+      message: 'Unable to update the new column',
+    };
   }
 };
 
@@ -107,5 +116,10 @@ exports.deleteColumn = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      code: '400',
+      success: false,
+      message: 'Unable to delete the column',
+    };
   }
 };

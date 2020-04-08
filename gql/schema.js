@@ -47,16 +47,6 @@ const typeDefs = gql`
     user(id: ID!): User
   }
 
-  """
-  Every mutation should implement MutationResponse, a consistent
-  way to returns meaningful information about errors or success.
-  """
-  interface MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-  }
-
   input CreateBoardInput {
     name: String!
     desc: String
@@ -77,6 +67,17 @@ const typeDefs = gql`
     userName: String!
     boardIds: [String]
     email: String
+  }
+
+  input CreateAuthUserInput {
+    userName: String!
+    email: String!
+    password: String!
+  }
+
+  input LoginInput {
+    email: String!
+    password: String!
   }
 
   input DeleteColumnInput {
@@ -107,11 +108,14 @@ const typeDefs = gql`
     text: String!
   }
 
-  type CreateBoardResponse implements MutationResponse {
+  interface MutationResponse {
+    """
+    Every mutation should implement MutationResponse, a consistent
+    way to returns meaningful information about errors or success.
+    """
     code: String!
     success: Boolean!
     message: String!
-    board: Board
   }
 
   type UpdateBoardResponse implements MutationResponse {
@@ -135,6 +139,13 @@ const typeDefs = gql`
     comment: Comment
   }
 
+  type CreateBoardResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    board: Board
+  }
+
   type CreateColumnResponse implements MutationResponse {
     code: String!
     success: Boolean!
@@ -156,6 +167,20 @@ const typeDefs = gql`
     user: User
   }
 
+  """
+  Authenticated users are created with the Firebase SDK.
+  """
+  type CreateAuthUserResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    user: User
+    "Token is a JSON web token returned by the Firebase auth service."
+    token: String
+    "userAuthId points to the uid of the Firebase authenticated user"
+    userAuthId: String
+  }
+
   type DeleteColumnResponse implements MutationResponse {
     code: String!
     success: Boolean!
@@ -174,11 +199,20 @@ const typeDefs = gql`
     message: String!
   }
 
+  type LoginResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    token: String
+  }
+
   type Mutation {
     createBoard(input: CreateBoardInput): CreateBoardResponse!
     createColumn(input: CreateColumnInput): CreateColumnResponse!
     createComment(input: CreateCommentInput): CreateCommentResponse!
     createUser(input: CreateUserInput): CreateUserResponse!
+    createAuthUser(input: CreateAuthUserInput): CreateAuthUserResponse!
+    login(input: LoginInput): LoginResponse!
     updateBoard(input: UpdateBoardInput): UpdateBoardResponse!
     updateColumn(input: UpdateColumnInput): UpdateColumnResponse!
     updateComment(input: UpdateCommentInput): UpdateCommentResponse!

@@ -23,6 +23,11 @@ exports.createBoard = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      code: '400',
+      success: false,
+      message: 'Unable to create a new board',
+    };
   }
 };
 
@@ -68,5 +73,10 @@ exports.updateBoard = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      code: '400',
+      success: false,
+      message: 'Unable to update the board',
+    };
   }
 };

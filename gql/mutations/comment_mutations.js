@@ -2,7 +2,9 @@
  * Comment Mutations
  */
 const { admin, db } = require('../../utils/admin');
-const { SUCCESSFUL, UNSUCCESSFUL } = require('../../utils/constants');
+const {
+  getGenericMutationResponseForError,
+} = require('../../helpers/resolver_helpers');
 
 // createComment mutation takes an input type, so we need to destructure args from that
 exports.createComment = async (_, { input: args }) => {
@@ -36,6 +38,7 @@ exports.createComment = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return getGenericMutationResponseForError('create', 'comment');
   }
 };
 
@@ -76,6 +79,7 @@ exports.updateComment = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return getGenericMutationResponseForError('update', 'comment');
   }
 };
 
@@ -105,5 +109,6 @@ exports.deleteComment = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return getGenericMutationResponseForError('delete', 'comment');
   }
 };

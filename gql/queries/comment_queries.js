@@ -1,7 +1,10 @@
 /**
  * Comment Queries
  */
-const { getCollection, getByIdFromCollection } = require('../gql_helpers');
+const {
+  getCollection,
+  getByIdFromCollection,
+} = require('../../helpers/gql_helpers');
 
 exports.getComments = async () => {
   try {

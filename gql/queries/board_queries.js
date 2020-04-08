@@ -1,7 +1,10 @@
 /**
  * Board Queries
  */
-const { getCollection, getByIdFromCollection } = require('../gql_helpers');
+const {
+  getCollection,
+  getByIdFromCollection,
+} = require('../../helpers/gql_helpers');
 const { admin } = require('../../utils/admin');
 
 exports.getBoards = async () => {

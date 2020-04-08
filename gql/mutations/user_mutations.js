@@ -2,8 +2,10 @@
  * User Mutations
  */
 const { db, admin } = require('../../utils/admin');
-const { SUCCESSFUL, UNSUCCESSFUL } = require('../../utils/constants');
-const { getCollection, getByIdFromCollection } = require('../gql_helpers');
+const { getByIdFromCollection } = require('../../helpers/gql_helpers');
+const {
+  getGenericMutationResponseForError,
+} = require('../../helpers/resolver_helpers');
 
 exports.createUser = async (_, { input: args }) => {
   let userName = args.userName.replace(/\s+/g, '');
@@ -29,7 +31,7 @@ exports.createUser = async (_, { input: args }) => {
     return {
       code: '200',
       success: true,
-      message: `Successfully createde new user, ${userName}`,
+      message: `Successfully created new user, ${userName}`,
       user: {
         userName,
         id: userName,
@@ -37,10 +39,11 @@ exports.createUser = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return getGenericMutationResponseForError('create', 'user');
   }
 };
 
-// TODO: when deleting a user, should delete the user comments as well
+// TODO: when deleting a user, should we delete the user comments as well?
 exports.deleteUser = async (_, { input: args }) => {
   if (!args || !args.id) {
     return {
@@ -67,5 +70,6 @@ exports.deleteUser = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    return getGenericMutationResponseForError('delete', 'user');
   }
 };

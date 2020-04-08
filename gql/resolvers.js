@@ -35,6 +35,7 @@ const {
   deleteComment,
 } = require('./mutations/comment_mutations');
 const { createUser, deleteUser } = require('./mutations/user_mutations');
+const { createAuthUser, login } = require('./mutations/auth_user_mutations');
 
 module.exports = {
   Query: {
@@ -51,6 +52,8 @@ module.exports = {
     createBoard,
     createColumn,
     createUser,
+    createAuthUser,
+    login,
     createComment,
     updateBoard,
     updateColumn,
