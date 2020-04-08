@@ -16,7 +16,7 @@ app.use(cors());
 exports.api = functions.region('us-east1').https.onRequest(app);
 
 // Graphql
-server.applyMiddleware({ app, path: '/graphql', cors: true });
+server.applyMiddleware({ app, path: '/', cors: true });
 
 // Rest
 // const { signup } = require('./handlers/users');
