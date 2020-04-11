@@ -5,7 +5,7 @@ const {
   getCollection,
   getByIdFromCollection,
 } = require('../../helpers/gql_helpers');
-const { admin } = require('../../utils/admin');
+const { db } = require('../../utils/admin');
 
 exports.getBoards = async () => {
   try {
@@ -35,8 +35,7 @@ exports.getBoard = async (_, { id }) => {
 
 exports.getBoardUsers = async (board) => {
   try {
-    const boardUsers = await admin
-      .firestore()
+    const boardUsers = await db
       .collection('users')
       .where('boardIds', 'array-contains', board.id)
       .get();
@@ -53,8 +52,7 @@ exports.getBoardUsers = async (board) => {
 
 exports.getBoardColumns = async (board) => {
   try {
-    const boardColumns = await admin
-      .firestore()
+    const boardColumns = await db
       .collection('columns')
       .where('boardId', '==', board.id)
       .get();
@@ -71,8 +69,7 @@ exports.getBoardColumns = async (board) => {
 
 exports.getBoardComments = async (board) => {
   try {
-    const boardComments = await admin
-      .firestore()
+    const boardComments = await db
       .collection('comments')
       .where('boardId', '==', board.id)
       .get();

@@ -1,7 +1,7 @@
 /**
  * Comment Mutations
  */
-const { admin, db } = require('../../utils/admin');
+const { admin, db } = require('../../utils/firebase');
 const {
   getGenericMutationResponseForError,
 } = require('../../helpers/resolver_helpers');

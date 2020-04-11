@@ -1,7 +1,7 @@
 /**
  * Board Mutations
  */
-const { db, admin } = require('../../utils/admin');
+const { db, admin } = require('../../utils/firebase');
 
 exports.createBoard = async (_, { input: args }) => {
   try {

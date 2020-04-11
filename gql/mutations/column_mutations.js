@@ -1,7 +1,7 @@
 /**
  * Column Mutations
  */
-const { db, admin } = require('../../utils/admin');
+const { db, admin } = require('../../utils/firebase');
 
 exports.createColumn = async (_, { input: args }) => {
   try {

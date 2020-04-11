@@ -1,7 +1,7 @@
 /**
  * Helper functions for queries and mutations
  */
-const { db } = require('../utils/admin');
+const { db } = require('../utils/firebase');
 
 /**
  * Get a collection of items from db

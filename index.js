@@ -7,22 +7,23 @@
 const functions = require('firebase-functions');
 const express = require('express');
 const { server } = require('./apollo');
-const cors = require('cors');
+// const cors = require('cors');
 
 const app = express();
-app.use(cors());
+// app.use(cors());
 
 // Endpoint
 exports.api = functions.region('us-east1').https.onRequest(app);
 
 // Graphql
-server.applyMiddleware({ app, path: '/', cors: true });
+server.applyMiddleware({ app, path: '/graphql', cors: true });
 
 // Rest
-// const { signup } = require('./handlers/users');
+const { signup, login } = require('./handlers/users');
 // const { getBoards } = require('./handlers/boards');
 // const { getColumns } = require('./handlers/columns');
 
-// app.post('/signup', signup);
+app.post('/signup', signup);
+app.post('/login', login);
 // app.get('/boards', getBoards);
 // app.get('/columns', getColumns);

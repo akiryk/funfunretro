@@ -35,7 +35,7 @@ const {
   deleteComment,
 } = require('./mutations/comment_mutations');
 const { createUser, deleteUser } = require('./mutations/user_mutations');
-const { createAuthUser, login } = require('./mutations/auth_user_mutations');
+const { signup, login } = require('./mutations/auth_user_mutations');
 
 module.exports = {
   Query: {
@@ -52,7 +52,7 @@ module.exports = {
     createBoard,
     createColumn,
     createUser,
-    createAuthUser,
+    signup,
     login,
     createComment,
     updateBoard,
@@ -66,6 +66,7 @@ module.exports = {
     users: getBoardUsers,
     columns: getBoardColumns,
     comments: getBoardComments,
+    // name: (parent) => parent.name, // not necessary because name is the same
   },
   Column: {
     comments: getColumnComments,

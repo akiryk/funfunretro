@@ -1,4 +1,5 @@
 /node_modules
 
 utils/config.js
+utils/firebase.js
 utils/serviceAccountKey.json

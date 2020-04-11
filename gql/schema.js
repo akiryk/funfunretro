@@ -69,7 +69,7 @@ const typeDefs = gql`
     email: String
   }
 
-  input CreateAuthUserInput {
+  input SignupInput {
     userName: String!
     email: String!
     password: String!
@@ -170,7 +170,7 @@ const typeDefs = gql`
   """
   Authenticated users are created with the Firebase SDK.
   """
-  type CreateAuthUserResponse implements MutationResponse {
+  type SignupResponse implements MutationResponse {
     code: String!
     success: Boolean!
     message: String!
@@ -211,7 +211,7 @@ const typeDefs = gql`
     createColumn(input: CreateColumnInput): CreateColumnResponse!
     createComment(input: CreateCommentInput): CreateCommentResponse!
     createUser(input: CreateUserInput): CreateUserResponse!
-    createAuthUser(input: CreateAuthUserInput): CreateAuthUserResponse!
+    signup(input: SignupInput): SignupResponse!
     login(input: LoginInput): LoginResponse!
     updateBoard(input: UpdateBoardInput): UpdateBoardResponse!
     updateColumn(input: UpdateColumnInput): UpdateColumnResponse!

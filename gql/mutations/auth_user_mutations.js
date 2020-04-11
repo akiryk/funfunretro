@@ -1,18 +1,14 @@
 /**
  * Auth User Mutations
  */
-const { db, admin } = require('../../utils/admin');
-const firebase = require('firebase');
-const config = require('../../utils/config.js');
-
-firebase.initializeApp(config);
+const { db, admin, firebase } = require('../../utils/firebase');
 
 const {
   validateSignupData,
   validateLoginData,
 } = require('../../utils/validators');
 
-exports.createAuthUser = async (_, { input: args }) => {
+exports.signup = async (_, { input: args }) => {
   const { email, userName, password } = args;
   const newUser = {
     email,
@@ -39,7 +35,7 @@ exports.createAuthUser = async (_, { input: args }) => {
         message: 'This userName is already taken',
       };
     }
-    // Async await for firebase to create authenticated user
+    // Async await for admin to create authenticated user
     const newAuthUser = await firebase
       .auth()
       .createUserWithEmailAndPassword(newUser.email, newUser.password);
@@ -54,7 +50,7 @@ exports.createAuthUser = async (_, { input: args }) => {
       userAuthId,
     };
 
-    // Async await for firebase to create a new user profile
+    // Async await for admin to create a new user profile
     await db.doc(`/users/${newUser.userName}`).set(userCredentials);
 
     return {
@@ -70,6 +66,13 @@ exports.createAuthUser = async (_, { input: args }) => {
     };
   } catch (error) {
     console.log(error);
+    if (error.code === 'auth/email-already-in-use') {
+      return {
+        code: '400',
+        success: false,
+        message: 'Try another email, that one is already taken',
+      };
+    }
     return {
       code: '400',
       success: false,

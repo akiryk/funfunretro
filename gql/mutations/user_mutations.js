@@ -1,7 +1,7 @@
 /**
  * User Mutations
  */
-const { db, admin } = require('../../utils/admin');
+const { db, admin } = require('../../utils/firebase');
 const { getByIdFromCollection } = require('../../helpers/gql_helpers');
 const {
   getGenericMutationResponseForError,

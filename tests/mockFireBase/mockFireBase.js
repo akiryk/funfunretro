@@ -1,46 +1,35 @@
 /**
  * Mock Firebase
  */
-const { mockBoardsData, mockColumnsData } = require('../mocks/mockData');
+const { mockDb } = require('../mocks/mockData');
 
-const mockGet = (collection) =>
-  jest.fn().mockImplementation(() => {
-    switch (collection) {
-      case 'boards':
-        return Promise.resolve(mockBoardsData);
-      case 'columns':
-        return Promise.resolve(mockColumnsData);
-    }
-  });
+const getCollection = (collection) => mockDb[collection];
 
 exports.mockFireBase = {
   admin: {
-    firestore: () => ({
-      collection: (collection) => {
-        return {
-          get: () => mockGet(collection),
-          where: jest.fn().mockImplementation(() => {
-            return {
-              get: jest.fn().mockImplementation(() => {
-                return Promise.resolve(mockColumnsData);
-              }),
-            };
-          }),
-        };
-      },
-    }),
+    firestore() {
+      return { collection: jest.fn(), where: jest.fn() };
+    },
   },
   db: {
     collection: (collection) => {
       return {
-        get: jest.fn().mockImplementation(() => {
-          switch (collection) {
-            case 'boards':
-              return Promise.resolve(mockBoardsData);
-            case 'columns':
-              return Promise.resolve(mockColumnsData);
-          }
-        }),
+        get: () => {
+          const data = getCollection(collection);
+          return Promise.resolve(data);
+        },
+        where: () => {
+          const data = getCollection('columns');
+          return Promise.resolve(data);
+        },
+        // get: jest.fn().mockImplementation(() => {
+        //   const data = getCollection(collection);
+        //   return Promise.resolve(data);
+        // }),
+        // where: jest.fn().mockImplementation((propA, matches, propB) => {
+        //   console.log('PropA', matches);
+        //   return;
+        // }),
       };
     },
   },

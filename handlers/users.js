@@ -1,6 +1,6 @@
-const firebase = require('firebase');
-const config = require('../utils/config.js');
-const { db } = require('../utils/admin');
+// const firebase = require('firebase');
+// const config = require('../utils/config.js');
+const { db, firebase } = require('../utils/firebase');
 
 const {
   validateSignupData,
@@ -8,7 +8,7 @@ const {
   reduceUserDetails,
 } = require('../utils/validators');
 
-firebase.initializeApp(config);
+// firebase.initializeApp(config);
 
 /**
  * Sign up -- create a new user and login
