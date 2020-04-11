@@ -1,11 +1,11 @@
-const admin = require('firebase-admin');
-var serviceAccount = require('./serviceAccountKey.json');
+// const admin = require('firebase-admin');
+// var serviceAccount = require('./serviceAccountKey.json');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://funfunretro.firebaseio.com',
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: 'https://funfunretro.firebaseio.com',
+// });
 
-const db = admin.firestore();
+// const db = admin.firestore();
 
-module.exports = { admin, db };
+// module.exports = { admin, db };

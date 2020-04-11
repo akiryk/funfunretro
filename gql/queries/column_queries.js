@@ -5,7 +5,7 @@ const {
   getCollection,
   getByIdFromCollection,
 } = require('../../helpers/gql_helpers');
-const { admin } = require('../../utils/admin');
+const { admin } = require('../../utils/firebase');
 
 exports.getColumns = async () => {
   try {

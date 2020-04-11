@@ -1,4 +1,4 @@
-const { db } = require('../utils/admin'); // db is firestore(), invoked from firebase admin's initilialized app.
+const { db } = require('../utils/firebase'); // db is firestore(), invoked from firebase admin's initilialized app.
 
 exports.getColumns = (req, res) => {
   console.log('GET COLUMNS');

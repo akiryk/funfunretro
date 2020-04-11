@@ -5,7 +5,7 @@ const {
   getCollection,
   getByIdFromCollection,
 } = require('../../helpers/gql_helpers');
-const { db } = require('../../utils/admin');
+const { db } = require('../../utils/firebase');
 
 exports.getBoards = async () => {
   try {
