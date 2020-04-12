@@ -15,6 +15,7 @@ const errorMsg = [
       success: false,
     },
     id: '',
+    uid: '',
   },
 ];
 
