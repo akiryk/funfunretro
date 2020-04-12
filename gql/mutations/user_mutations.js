@@ -6,6 +6,7 @@ const { getByIdFromCollection } = require('../../helpers/gql_helpers');
 const {
   getGenericMutationResponseForError,
 } = require('../../helpers/resolver_helpers');
+const { MEMBER_ROLE } = require('../../constants');
 
 exports.createUser = async (_, { input: args }) => {
   let userName = args.userName.replace(/\s+/g, '');
@@ -18,22 +19,25 @@ exports.createUser = async (_, { input: args }) => {
         message: `oooh, that userName is already taken`,
       };
     }
-    await admin
-      .firestore()
-      .collection('users')
-      .doc(userName)
-      .set({
-        userName,
-        boardIds: args.boardIds || [],
-        email: args.email || '',
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+    const roles = args.roles || [MEMBER_ROLE];
+    const email = args.email || '';
+    const boardIds = args.boardIds || [];
+    await admin.firestore().collection('users').doc(userName).set({
+      userName,
+      boardIds,
+      email,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      roles,
+    });
     return {
       code: '200',
       success: true,
       message: `Successfully created new user, ${userName}`,
       user: {
         userName,
+        roles,
+        email,
+        boardIds,
         id: userName,
       },
     };

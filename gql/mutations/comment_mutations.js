@@ -5,9 +5,18 @@ const { admin, db } = require('../../utils/firebase');
 const {
   getGenericMutationResponseForError,
 } = require('../../helpers/resolver_helpers');
+const { MEMBER_ROLE } = require('../../constants');
 
 // createComment mutation takes an input type, so we need to destructure args from that
-exports.createComment = async (_, { input: args }) => {
+exports.createComment = async (_, { input: args }, user) => {
+  if (!user.roles || !user.roles.includes(MEMBER)) {
+    // only logged in users can see a board
+    return {
+      message: 'you must have member role to comment',
+      code: '400',
+      success: false,
+    };
+  }
   const text = args.text.trim();
   if (text === '') {
     return {
@@ -42,7 +51,17 @@ exports.createComment = async (_, { input: args }) => {
   }
 };
 
-exports.updateComment = async (_, { input: args }) => {
+// You must be the same commenter or be admin to change comment
+exports.updateComment = async (_, { input: args }, user) => {
+  if (!user.roles || !user.roles.includes(MEMBER_ROLE)) {
+    // only logged in users can see a board
+    return {
+      message: 'you must have member role to comment',
+      code: '400',
+      success: false,
+    };
+  }
+
   const commentId = args.id;
   try {
     const commentToUpdate = db.collection('comments').doc(commentId);
@@ -63,6 +82,13 @@ exports.updateComment = async (_, { input: args }) => {
       };
     }
     const oldDoc = doc.data();
+    if (oldDoc.userId !== user.userName) {
+      return {
+        code: '400',
+        success: false,
+        message: `Only the creator of a comment or an admin may edit the comment`,
+      };
+    }
     const newDoc = {
       ...oldDoc,
       text,

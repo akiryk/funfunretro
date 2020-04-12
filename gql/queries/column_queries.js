@@ -7,7 +7,18 @@ const {
 } = require('../../helpers/gql_helpers');
 const { admin } = require('../../utils/firebase');
 
-exports.getColumns = async () => {
+const errorMsg = [
+  {
+    message: 'you must be logged in',
+    code: '400',
+    success: false,
+  },
+];
+
+exports.getColumns = async (_, __, user) => {
+  if (!user.roles) {
+    return errorMsg;
+  }
   try {
     const columns = await getCollection('columns');
     return columns.docs.map((column) => {
@@ -21,7 +32,10 @@ exports.getColumns = async () => {
   }
 };
 
-exports.getColumn = async (_, { id }) => {
+exports.getColumn = async (_, { id }, user) => {
+  if (!user.roles) {
+    return errorMsg;
+  }
   try {
     const column = await getByIdFromCollection(id, 'columns');
     return {
@@ -33,7 +47,10 @@ exports.getColumn = async (_, { id }) => {
   }
 };
 
-exports.getColumnComments = async (column) => {
+exports.getColumnComments = async (column, _, user) => {
+  if (!user.roles) {
+    return errorMsg;
+  }
   try {
     const columnComments = await admin
       .firestore()

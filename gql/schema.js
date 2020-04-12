@@ -1,49 +1,62 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
-  type Board {
-    name: String!
+  type Board implements QueryResponse {
+    name: String
     desc: String
-    id: ID!
+    id: ID
     columnIds: [String]
     columns: [Column]
     comments: [Comment]
     userIds: [String]
     users: [User]
+    message: String
+    code: String
+    success: Boolean
   }
-  type Column {
-    id: ID!
-    boardId: String!
-    name: String!
+  type Column implements QueryResponse {
+    id: ID
+    boardId: String
+    name: String
     comments: [Comment]
+    message: String
+    code: String
+    success: Boolean
   }
-  type Comment {
-    id: ID!
-    columnId: String!
-    text: String!
-    boardId: String!
+  type Comment implements QueryResponse {
+    id: ID
+    columnId: String
+    text: String
+    boardId: String
     createdAt: String
-    userId: String!
+    userId: String
     user: User
+    message: String
+    code: String
+    success: Boolean
   }
-  type User {
-    userName: String!
+  type User implements QueryResponse {
+    userName: String
     email: String
     boardIds: [String]
     boards: [Board]
     comments: [Comment]
     id: ID!
+    userId: String
+    roles: [String!]
     message: String
+    code: String
+    success: Boolean
   }
 
   type Query {
-    boards: [Board]!
+    boards: [Board]
     board(id: ID!): Board
-    columns: [Column]!
+    columns: [Column]
     column(id: ID!): Column
-    comments: [Comment]!
+    comments: [Comment]
     comment(id: ID!): Comment
-    users: [User]!
+    users: [User]
     user(id: ID!): User
   }
 
@@ -106,6 +119,16 @@ const typeDefs = gql`
   input UpdateCommentInput {
     id: String!
     text: String!
+  }
+
+  interface QueryResponse {
+    """
+    Every query should implement QueryResponse, a consistent
+    way to returns meaningful information about errors or success.
+    """
+    code: String
+    success: Boolean
+    message: String
   }
 
   interface MutationResponse {

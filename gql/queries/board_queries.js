@@ -7,6 +7,10 @@ const {
 } = require('../../helpers/gql_helpers');
 const { db } = require('../../utils/firebase');
 
+/*
+ * Get Boards resolver
+ * Permissions: Anyone can view boards
+ */
 exports.getBoards = async () => {
   try {
     const boards = await getCollection('boards');
@@ -14,26 +18,65 @@ exports.getBoards = async () => {
       return {
         ...board.data(),
         id: board.id,
+        code: '200',
+        success: true,
+        message: 'success',
       };
     });
   } catch (err) {
     console.log(err);
+    return {
+      message: err,
+      code: '500',
+      success: false,
+    };
   }
 };
 
-exports.getBoard = async (_, { id }) => {
+/*
+ * Get Board resolver
+ * Permissions: Only members, editors, admin, can view a board by id
+ */
+exports.getBoard = async (_, { id }, user) => {
+  // any user role will do
+  if (!user.roles) {
+    // only logged in users can see a board
+    return {
+      message: 'you must be logged in to view a board',
+      code: '400',
+      success: false,
+    };
+  }
   try {
     const board = await getByIdFromCollection(id, 'boards');
     return {
+      message: 'board retrieved',
+      code: '200',
+      success: true,
       ...board.data(),
       id,
     };
   } catch (error) {
     console.log(error);
+    return {
+      message: error,
+      code: '500',
+      success: false,
+    };
   }
 };
 
-exports.getBoardUsers = async (board) => {
+exports.getBoardUsers = async (board, _, user) => {
+  if (!user.roles) {
+    // only logged in users can see a board
+    return [
+      {
+        message: 'you must be logged in to view users of a board',
+        code: '400',
+        success: false,
+      },
+    ];
+  }
   try {
     const boardUsers = await db
       .collection('users')
@@ -47,10 +90,24 @@ exports.getBoardUsers = async (board) => {
     });
   } catch (error) {
     console.log(error);
+    return {
+      message: error,
+      code: '500',
+      success: false,
+    };
   }
 };
 
-exports.getBoardColumns = async (board) => {
+exports.getBoardColumns = async (board, _, user) => {
+  if (!user.roles) {
+    return [
+      {
+        message: 'must be logged in to view colums',
+        code: '400',
+        success: false,
+      },
+    ];
+  }
   try {
     const boardColumns = await db
       .collection('columns')
@@ -63,11 +120,25 @@ exports.getBoardColumns = async (board) => {
       };
     });
   } catch (error) {
-    console.log(error);
+    return {
+      message: error,
+      code: '500',
+      success: false,
+    };
   }
 };
 
-exports.getBoardComments = async (board) => {
+exports.getBoardComments = async (board, _, user) => {
+  if (!user.roles) {
+    // only logged in users can see a board
+    return [
+      {
+        message: 'you must be logged in to view comments on a board',
+        code: '400',
+        success: false,
+      },
+    ];
+  }
   try {
     const boardComments = await db
       .collection('comments')
@@ -81,5 +152,10 @@ exports.getBoardComments = async (board) => {
     });
   } catch (error) {
     console.log(error);
+    return {
+      message: error,
+      code: '500',
+      success: false,
+    };
   }
 };

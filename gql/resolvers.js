@@ -83,4 +83,9 @@ module.exports = {
       return null;
     },
   },
+  QueryResponse: {
+    __resolveType(obj, context, info) {
+      return null;
+    },
+  },
 };

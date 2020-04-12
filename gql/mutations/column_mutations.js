@@ -2,8 +2,18 @@
  * Column Mutations
  */
 const { db, admin } = require('../../utils/firebase');
+const { ADMIN_ROLE, MEMBER_ROLE } = require('../../constants');
 
+// Editor role only
 exports.createColumn = async (_, { input: args }) => {
+  if (!user.roles || !user.roles.includes(EDITOR)) {
+    // only logged in users can see a board
+    return {
+      message: 'you must have admin role to create a column',
+      code: '400',
+      success: false,
+    };
+  }
   try {
     const newColumn = await admin.firestore().collection('columns').add({
       name: args.name,
@@ -29,7 +39,16 @@ exports.createColumn = async (_, { input: args }) => {
   }
 };
 
-exports.updateColumn = async (_, { input: args }) => {
+// Editor role only
+exports.updateColumn = async (_, { input: args }, user) => {
+  if (!user.roles || !user.roles.includes(EDITOR)) {
+    // only logged in users can see a board
+    return {
+      message: 'you must have admin role to update a column',
+      code: '400',
+      success: false,
+    };
+  }
   const columnId = args.id;
   try {
     const columnToUpdate = db.collection('columns').doc(columnId);
@@ -74,7 +93,15 @@ exports.updateColumn = async (_, { input: args }) => {
   }
 };
 
-exports.deleteColumn = async (_, { input: args }) => {
+// Admin role only
+exports.deleteColumn = async (_, { input: args }, user) => {
+  if (!user.roles || !user.roles.includes(ADMIN_ROLE)) {
+    return {
+      message: 'You need admin privileges for that action',
+      code: '400',
+      success: false,
+    };
+  }
   if (!args || !args.id) {
     return {
       message: "It looks like you didn't provide a column id",

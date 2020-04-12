@@ -2,8 +2,29 @@
  * Board Mutations
  */
 const { db, admin } = require('../../utils/firebase');
+const { EDITOR_ROLE, ADMIN_ROLE } = require('../../constants');
 
-exports.createBoard = async (_, { input: args }) => {
+const errorMsg = {
+  message: 'Editor privileges or above are required',
+  code: '400',
+  success: false,
+};
+
+/*
+ * Create Board Mutation
+ *
+ * @param {object} board - the board, not used by this function
+ * @param {object} args - the arguments passed to the mutation's input
+ * @param {object} user - the logged in user
+ */
+exports.createBoard = async (_, { input: args }, user) => {
+  if (
+    !user.roles ||
+    !user.roles.includes(ADMIN_ROLE) ||
+    !user.roles.includes(EDITOR_ROLE)
+  ) {
+    return errorMsg;
+  }
   try {
     const newBoard = await db.collection('boards').add({
       name: args.name,
@@ -31,7 +52,14 @@ exports.createBoard = async (_, { input: args }) => {
   }
 };
 
-exports.updateBoard = async (_, { input: args }) => {
+exports.updateBoard = async (_, { input: args }, user) => {
+  if (
+    !user.roles ||
+    !user.roles.includes(ADMIN_ROLE) ||
+    !user.roles.includes(EDITOR_ROLE)
+  ) {
+    return errorMsg;
+  }
   const boardId = args.id;
   try {
     const boardToUpdate = db.collection('boards').doc(boardId);

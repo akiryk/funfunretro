@@ -7,7 +7,19 @@ const {
 } = require('../../helpers/gql_helpers');
 const { admin } = require('../../utils/firebase');
 
-exports.getUsers = async () => {
+const errorMsg = [
+  {
+    message: 'you must be logged in to view user level data',
+    code: '400',
+    success: false,
+    id: '',
+  },
+];
+
+exports.getUsers = async (_, __, user) => {
+  if (!user.roles) {
+    return errorMsg;
+  }
   try {
     const users = await getCollection('users');
     return users.docs.map((user) => {
@@ -21,7 +33,10 @@ exports.getUsers = async () => {
   }
 };
 
-exports.getUser = async (_, { id }) => {
+exports.getUser = async (_, { id }, user) => {
+  if (!user.roles) {
+    return errorMsg;
+  }
   try {
     const user = await getByIdFromCollection(id, 'users');
     return {
@@ -33,15 +48,16 @@ exports.getUser = async (_, { id }) => {
   }
 };
 
-exports.getUserBoards = async (user) => {
-  console.log('get user boards', user.id);
+exports.getUserBoards = async (user, _, loggedInUser) => {
+  if (!loggedInUser.roles) {
+    return errorMsg;
+  }
   try {
     const userBoards = await admin
       .firestore()
       .collection('boards')
       .where('userIds', 'array-contains', user.id)
       .get();
-    console.log('we are here');
     return userBoards.docs.map((board) => {
       return {
         ...board.data(),
@@ -53,7 +69,10 @@ exports.getUserBoards = async (user) => {
   }
 };
 
-exports.getUserComments = async (user) => {
+exports.getUserComments = async (user, _, loggedInUser) => {
+  if (!loggedInUser.roles) {
+    return errorMsg;
+  }
   try {
     const userComments = await admin
       .firestore()

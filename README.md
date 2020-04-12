@@ -176,3 +176,13 @@ mutation {
   }
 }
 ```
+
+### Graphiql
+
+To add headers to a query:
+
+```
+{
+  "Authorization":"Bearer TOKENIDGOESHEREXXXXX"
+}
+```
