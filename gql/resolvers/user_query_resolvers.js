@@ -9,9 +9,11 @@ const { admin } = require('../../utils/firebase');
 
 const errorMsg = [
   {
-    message: 'you must be logged in to view user level data',
-    code: '400',
-    success: false,
+    error: {
+      message: 'you must be logged in to view user level data',
+      code: '400',
+      success: false,
+    },
     id: '',
   },
 ];

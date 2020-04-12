@@ -22,12 +22,14 @@ exports.createUser = async (_, { input: args }) => {
     const roles = args.roles || [MEMBER_ROLE];
     const email = args.email || '';
     const boardIds = args.boardIds || [];
+    const uid = args.uid || '';
     await admin.firestore().collection('users').doc(userName).set({
       userName,
-      boardIds,
       email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      uid,
       roles,
+      boardIds,
     });
     return {
       code: '200',

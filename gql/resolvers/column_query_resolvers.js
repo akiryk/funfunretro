@@ -9,9 +9,12 @@ const { admin } = require('../../utils/firebase');
 
 const errorMsg = [
   {
-    message: 'you must be logged in',
-    code: '400',
-    success: false,
+    id: '',
+    error: {
+      message: 'you must be logged in',
+      code: '400',
+      success: false,
+    },
   },
 ];
 

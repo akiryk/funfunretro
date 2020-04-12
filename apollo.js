@@ -22,7 +22,7 @@ const getUser = (req) => {
       req.user = decodedToken;
       return db
         .collection('users')
-        .where('userId', '==', req.user.uid)
+        .where('uid', '==', req.user.uid)
         .limit(1)
         .get();
     })
@@ -46,11 +46,10 @@ exports.server = new ApolloServer({
   context: async ({ req }) => {
     try {
       const user = await getUser(req);
-      // add the user to the context
       if (!user) {
-        console.log('JUST RETURN');
-        return;
+        return null;
       }
+      // add the user to the context
       return user;
     } catch (error) {
       console.log(error);

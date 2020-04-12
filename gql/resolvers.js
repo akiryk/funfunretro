@@ -5,37 +5,43 @@ const {
   getBoardUsers,
   getBoardComments,
   getBoardColumns,
-} = require('./queries/board_queries');
+} = require('./resolvers/board_query_resolvers');
 const {
   getColumns,
   getColumn,
   getColumnComments,
-} = require('./queries/column_queries');
+} = require('./resolvers/column_query_resolvers');
 const {
   getComments,
   getComment,
   getCommentUser,
-} = require('./queries/comment_queries');
+} = require('./resolvers/comment_query_resolvers');
 const {
   getUsers,
   getUser,
   getUserBoards,
   getUserComments,
-} = require('./queries/user_queries');
+} = require('./resolvers/user_query_resolvers');
 // Mutations
-const { createBoard, updateBoard } = require('./mutations/board_mutations');
+const {
+  createBoard,
+  updateBoard,
+} = require('./resolvers/board_mutation_resolvers');
 const {
   createColumn,
   updateColumn,
   deleteColumn,
-} = require('./mutations/column_mutations');
+} = require('./resolvers/column_mutation_resolvers');
 const {
   createComment,
   updateComment,
   deleteComment,
-} = require('./mutations/comment_mutations');
-const { createUser, deleteUser } = require('./mutations/user_mutations');
-const { signup, login } = require('./mutations/auth_user_mutations');
+} = require('./resolvers/comment_mutation_resolvers');
+const {
+  createUser,
+  deleteUser,
+} = require('./resolvers/user_mutation_resolvers');
+const { signup, login } = require('./resolvers/auth_user_mutation_resolvers');
 
 module.exports = {
   Query: {
@@ -79,11 +85,6 @@ module.exports = {
     comments: getUserComments,
   },
   MutationResponse: {
-    __resolveType(obj, context, info) {
-      return null;
-    },
-  },
-  QueryResponse: {
     __resolveType(obj, context, info) {
       return null;
     },

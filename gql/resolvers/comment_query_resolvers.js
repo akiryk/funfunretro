@@ -6,17 +6,20 @@ const {
   getByIdFromCollection,
 } = require('../../helpers/gql_helpers');
 
-const errorMsg = [
+const permissionsErrorMessage = [
   {
-    message: 'you must be logged in',
-    code: '400',
-    success: false,
+    id: '',
+    error: {
+      message: 'you must be logged in',
+      code: '400',
+      success: false,
+    },
   },
 ];
 
 exports.getComments = async (_, __, user) => {
   if (!user.roles) {
-    return errorMsg;
+    return permissionsErrorMessage;
   }
   try {
     const comments = await getCollection('comments');
@@ -33,7 +36,7 @@ exports.getComments = async (_, __, user) => {
 
 exports.getComment = async (_, { id }, user) => {
   if (!user.roles) {
-    return errorMsg;
+    return permissionsErrorMessage;
   }
   try {
     const comment = await getByIdFromCollection(id, 'comments');
@@ -48,11 +51,7 @@ exports.getComment = async (_, { id }, user) => {
 
 exports.getCommentUser = async (comment, _, user) => {
   if (!user.roles) {
-    return {
-      message: 'you must be logged in to see who authored a comment',
-      code: '400',
-      success: false,
-    };
+    return permissionsErrorMessage;
   }
   try {
     const commentUser = await getByIdFromCollection(comment.userId, 'users');

@@ -2,6 +2,8 @@
  * Auth User Mutations
  */
 const { db, admin, firebase } = require('../../utils/firebase');
+const { MEMBER_ROLE } = require('../../constants');
+const { createUser } = require('./user_mutation_resolvers');
 
 const {
   validateSignupData,
@@ -47,21 +49,24 @@ exports.signup = async (_, { input: args }) => {
       userName: newUser.userName,
       email: newUser.email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      userAuthId,
+      uid: userAuthId,
+      roles: [MEMBER_ROLE],
+      boardIds: [],
     };
-
+    await createUser(null, {
+      input: userCredentials,
+    });
     // Async await for admin to create a new user profile
-    await db.doc(`/users/${newUser.userName}`).set(userCredentials);
+    // await db.doc(`/users/${newUser.userName}`).set(userCredentials);
 
     return {
       code: '201',
       success: true,
       message: 'Signed up a new user',
       token,
-      userAuthId,
       user: {
-        userName,
-        email,
+        ...userCredentials,
+        id: userName,
       },
     };
   } catch (error) {

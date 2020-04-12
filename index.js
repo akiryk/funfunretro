@@ -7,7 +7,7 @@
 const functions = require('firebase-functions');
 const express = require('express');
 const { server } = require('./apollo');
-const FbAuth = require('./utils/fb_auth');
+// const FbAuth = require('./utils/fb_auth');
 
 const app = express();
 
@@ -22,11 +22,11 @@ exports.api = functions.region('us-east1').https.onRequest(app);
 server.applyMiddleware({ app, path: '/graphql', cors: true });
 
 // Rest
-const { signup, login } = require('./handlers/users');
-const { getBoards } = require('./handlers/boards');
-const { getColumns } = require('./handlers/columns');
+// const { signup, login } = require('./handlers/users');
+// const { getBoards } = require('./handlers/boards');
+// const { getColumns } = require('./handlers/columns');
 
-app.post('/signup', signup);
-app.post('/login', login);
-app.get('/boards', FbAuth, getBoards);
-app.get('/columns', getColumns);
+// app.post('/signup', signup);
+// app.post('/login', login);
+// app.get('/boards', FbAuth, getBoards);
+// app.get('/columns', getColumns);

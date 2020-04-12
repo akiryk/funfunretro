@@ -18,17 +18,17 @@ exports.getBoards = async () => {
       return {
         ...board.data(),
         id: board.id,
-        code: '200',
-        success: true,
-        message: 'success',
       };
     });
   } catch (err) {
     console.log(err);
     return {
-      message: err,
-      code: '500',
-      success: false,
+      id: '',
+      error: {
+        message: err,
+        code: '500',
+        success: false,
+      },
     };
   }
 };
@@ -42,26 +42,29 @@ exports.getBoard = async (_, { id }, user) => {
   if (!user.roles) {
     // only logged in users can see a board
     return {
-      message: 'you must be logged in to view a board',
-      code: '400',
-      success: false,
+      id: '',
+      error: {
+        message: 'you must be logged in to view a board',
+        code: '400',
+        success: false,
+      },
     };
   }
   try {
     const board = await getByIdFromCollection(id, 'boards');
     return {
-      message: 'board retrieved',
-      code: '200',
-      success: true,
       ...board.data(),
       id,
     };
   } catch (error) {
     console.log(error);
     return {
-      message: error,
-      code: '500',
-      success: false,
+      id: '',
+      error: {
+        message: error,
+        code: '500',
+        success: false,
+      },
     };
   }
 };
@@ -71,9 +74,12 @@ exports.getBoardUsers = async (board, _, user) => {
     // only logged in users can see a board
     return [
       {
-        message: 'you must be logged in to view users of a board',
-        code: '400',
-        success: false,
+        id: '',
+        error: {
+          message: 'you must be logged in to view users of a board',
+          code: '400',
+          success: false,
+        },
       },
     ];
   }
@@ -91,9 +97,12 @@ exports.getBoardUsers = async (board, _, user) => {
   } catch (error) {
     console.log(error);
     return {
-      message: error,
-      code: '500',
-      success: false,
+      id: '',
+      error: {
+        message: error,
+        code: '500',
+        success: false,
+      },
     };
   }
 };
@@ -102,9 +111,12 @@ exports.getBoardColumns = async (board, _, user) => {
   if (!user.roles) {
     return [
       {
-        message: 'must be logged in to view colums',
-        code: '400',
-        success: false,
+        id: '',
+        error: {
+          message: 'must be logged in to view colums',
+          code: '400',
+          success: false,
+        },
       },
     ];
   }
@@ -121,9 +133,12 @@ exports.getBoardColumns = async (board, _, user) => {
     });
   } catch (error) {
     return {
-      message: error,
-      code: '500',
-      success: false,
+      id: '',
+      error: {
+        message: error,
+        code: '500',
+        success: false,
+      },
     };
   }
 };
@@ -133,9 +148,12 @@ exports.getBoardComments = async (board, _, user) => {
     // only logged in users can see a board
     return [
       {
-        message: 'you must be logged in to view comments on a board',
-        code: '400',
-        success: false,
+        id: '',
+        error: {
+          message: 'you must be logged in to view comments on a board',
+          code: '400',
+          success: false,
+        },
       },
     ];
   }
@@ -153,9 +171,12 @@ exports.getBoardComments = async (board, _, user) => {
   } catch (error) {
     console.log(error);
     return {
-      message: error,
-      code: '500',
-      success: false,
+      id: '',
+      error: {
+        message: error,
+        code: '500',
+        success: false,
+      },
     };
   }
 };

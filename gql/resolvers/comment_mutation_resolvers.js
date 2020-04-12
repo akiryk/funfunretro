@@ -5,11 +5,11 @@ const { admin, db } = require('../../utils/firebase');
 const {
   getGenericMutationResponseForError,
 } = require('../../helpers/resolver_helpers');
-const { MEMBER_ROLE } = require('../../constants');
+const { MEMBER_ROLE, ADMIN_ROLE } = require('../../constants');
 
 // createComment mutation takes an input type, so we need to destructure args from that
 exports.createComment = async (_, { input: args }, user) => {
-  if (!user.roles || !user.roles.includes(MEMBER)) {
+  if (!user.roles || !user.roles.includes(MEMBER_ROLE)) {
     // only logged in users can see a board
     return {
       message: 'you must have member role to comment',
@@ -98,7 +98,7 @@ exports.updateComment = async (_, { input: args }, user) => {
     return {
       code: '200',
       success: true,
-      message: `Successfully updated comment ${commentId}`,
+      message: `Successfully updated comment`,
       comment: {
         ...newDoc,
       },
@@ -109,12 +109,19 @@ exports.updateComment = async (_, { input: args }, user) => {
   }
 };
 
-exports.deleteComment = async (_, { input: args }) => {
+exports.deleteComment = async (_, { input: args }, user) => {
   if (!args || !args.id) {
     return {
       code: '400',
       success: false,
       message: "It looks like you didn't provide a comment id",
+    };
+  }
+  if (!user || !user.roles) {
+    return {
+      code: '400',
+      success: false,
+      message: 'inadequate permission to delete',
     };
   }
   const commentToDelete = db.doc(`/comments/${args.id}`);
@@ -127,12 +134,23 @@ exports.deleteComment = async (_, { input: args }) => {
         message: `comment does not exist with id ${args.id}`,
       };
     }
-    await commentToDelete.delete();
-    return {
-      code: '200',
-      success: true,
-      message: `Comment ${args.id} deleted successfully`,
-    };
+    if (
+      commentDoc.data().userId === user.userName ||
+      user.roles.includes(ADMIN_ROLE)
+    ) {
+      await commentToDelete.delete();
+      return {
+        code: '200',
+        success: true,
+        message: `Comment ${args.id} deleted successfully`,
+      };
+    } else {
+      return {
+        message: 'insufficient privileges to delete comment',
+        code: '400',
+        success: false,
+      };
+    }
   } catch (error) {
     console.log(error);
     return getGenericMutationResponseForError('delete', 'comment');
