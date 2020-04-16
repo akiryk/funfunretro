@@ -2,7 +2,7 @@
  * Board Mutations
  */
 const { db, admin } = require('../../utils/firebase');
-const { EDITOR_ROLE, ADMIN_ROLE } = require('../../constants');
+const { isMember } = require('../../helpers/resolver_helpers');
 
 const errorMsg = {
   message: 'Editor privileges or above are required',
@@ -18,11 +18,7 @@ const errorMsg = {
  * @param {object} user - the logged in user
  */
 exports.createBoard = async (_, { input: args }, user) => {
-  if (
-    !user.roles ||
-    !user.roles.includes(ADMIN_ROLE) ||
-    !user.roles.includes(EDITOR_ROLE)
-  ) {
+  if (isMember(user)) {
     return errorMsg;
   }
   try {
@@ -53,11 +49,7 @@ exports.createBoard = async (_, { input: args }, user) => {
 };
 
 exports.updateBoard = async (_, { input: args }, user) => {
-  if (
-    !user.roles ||
-    !user.roles.includes(ADMIN_ROLE) ||
-    !user.roles.includes(EDITOR_ROLE)
-  ) {
+  if (isMember(user)) {
     return errorMsg;
   }
   const boardId = args.id;

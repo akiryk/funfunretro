@@ -15,3 +15,16 @@ exports.getGenericMutationResponseForError = (
   success: false,
   message: `Unable to ${action} ${dataType}`,
 });
+
+const privileges = {
+  NO_ROLE: 0,
+  MEMBER: 1,
+  EDITOR: 2,
+  ADMIN: 3,
+};
+
+exports.isMember = ({ role = 'NO_ROLE' } = {}) => privileges[role] > 0;
+
+exports.isEditor = ({ role = 'NO_ROLE' } = {}) => privileges[role] > 1;
+
+exports.isAdmin = ({ role = 'NO_ROLE' } = {}) => privileges[role] > 2;

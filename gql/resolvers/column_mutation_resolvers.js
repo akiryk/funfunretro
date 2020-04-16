@@ -2,12 +2,10 @@
  * Column Mutations
  */
 const { db, admin } = require('../../utils/firebase');
-const { ADMIN_ROLE, MEMBER_ROLE } = require('../../constants');
-
+const { isEditor, isAdmin } = require('../../helpers/resolver_helpers');
 // Editor role only
 exports.createColumn = async (_, { input: args }) => {
-  if (!user.roles || !user.roles.includes(EDITOR)) {
-    // only logged in users can see a board
+  if (!isEditor(user)) {
     return {
       message: 'you must have admin role to create a column',
       code: '400',
@@ -41,7 +39,7 @@ exports.createColumn = async (_, { input: args }) => {
 
 // Editor role only
 exports.updateColumn = async (_, { input: args }, user) => {
-  if (!user.roles || !user.roles.includes(EDITOR)) {
+  if (!isEditor(user)) {
     // only logged in users can see a board
     return {
       message: 'you must have admin role to update a column',
@@ -95,7 +93,7 @@ exports.updateColumn = async (_, { input: args }, user) => {
 
 // Admin role only
 exports.deleteColumn = async (_, { input: args }, user) => {
-  if (!user.roles || !user.roles.includes(ADMIN_ROLE)) {
+  if (!isAdmin(user)) {
     return {
       message: 'You need admin privileges for that action',
       code: '400',

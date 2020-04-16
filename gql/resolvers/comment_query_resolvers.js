@@ -5,6 +5,7 @@ const {
   getCollection,
   getByIdFromCollection,
 } = require('../../helpers/gql_helpers');
+const { isMember } = require('../../helpers/resolver_helpers');
 
 const permissionsErrorMessage = [
   {
@@ -18,7 +19,7 @@ const permissionsErrorMessage = [
 ];
 
 exports.getComments = async (_, __, user) => {
-  if (!user.roles) {
+  if (!isMember(user)) {
     return permissionsErrorMessage;
   }
   try {
@@ -35,7 +36,7 @@ exports.getComments = async (_, __, user) => {
 };
 
 exports.getComment = async (_, { id }, user) => {
-  if (!user.roles) {
+  if (!isMember(user)) {
     return permissionsErrorMessage;
   }
   try {
@@ -50,7 +51,7 @@ exports.getComment = async (_, { id }, user) => {
 };
 
 exports.getCommentUser = async (comment, _, user) => {
-  if (!user.roles) {
+  if (!isMember(user)) {
     return permissionsErrorMessage;
   }
   try {

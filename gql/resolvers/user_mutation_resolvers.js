@@ -6,9 +6,9 @@ const { getByIdFromCollection } = require('../../helpers/gql_helpers');
 const {
   getGenericMutationResponseForError,
 } = require('../../helpers/resolver_helpers');
-const { MEMBER_ROLE } = require('../../constants');
+const { isMember } = require('../../helpers/resolver_helpers');
 
-exports.createUser = async (_, { input: args }) => {
+exports.createUser = async (_, { input: args, uid }) => {
   let userName = args.userName.replace(/\s+/g, '');
   try {
     const user = await getByIdFromCollection(userName, 'users');

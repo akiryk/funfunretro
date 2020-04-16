@@ -4,23 +4,22 @@
 const {
   getCollection,
   getByIdFromCollection,
+  getFromCollectionWhere,
 } = require('../../helpers/gql_helpers');
-const { admin } = require('../../utils/firebase');
+const { isAdmin } = require('../../helpers/resolver_helpers');
 
-const errorMsg = [
-  {
-    id: '',
-    error: {
-      message: 'you must be logged in',
-      code: '400',
-      success: false,
-    },
+const errorMsg = {
+  id: '',
+  response: {
+    message: 'you must be an Admin to get all the columns',
+    code: '400',
+    success: false,
   },
-];
+};
 
 exports.getColumns = async (_, __, user) => {
-  if (!user.roles) {
-    return errorMsg;
+  if (!isAdmin(user)) {
+    return [errorMsg]; // needs to be an array
   }
   try {
     const columns = await getCollection('columns');
@@ -36,7 +35,7 @@ exports.getColumns = async (_, __, user) => {
 };
 
 exports.getColumn = async (_, { id }, user) => {
-  if (!user.roles) {
+  if (!isAdmin(user)) {
     return errorMsg;
   }
   try {
@@ -51,15 +50,16 @@ exports.getColumn = async (_, { id }, user) => {
 };
 
 exports.getColumnComments = async (column, _, user) => {
-  if (!user.roles) {
-    return errorMsg;
+  if (!isAdmin(user)) {
+    return [errorMsg]; // needs to be an array
   }
   try {
-    const columnComments = await admin
-      .firestore()
-      .collection('comments')
-      .where('columnId', '==', column.id)
-      .get();
+    const columnComments = await getFromCollectionWhere({
+      collection: 'comments',
+      targetProp: 'columnId',
+      matches: '==',
+      sourceProp: column.id,
+    });
     return columnComments.docs.map((comment) => {
       return {
         ...comment.data(),

@@ -5,11 +5,11 @@ const { admin, db } = require('../../utils/firebase');
 const {
   getGenericMutationResponseForError,
 } = require('../../helpers/resolver_helpers');
-const { MEMBER_ROLE, ADMIN_ROLE } = require('../../constants');
+const { isMember, isAdmin } = require('../../helpers/resolver_helpers');
 
 // createComment mutation takes an input type, so we need to destructure args from that
 exports.createComment = async (_, { input: args }, user) => {
-  if (!user.roles || !user.roles.includes(MEMBER_ROLE)) {
+  if (!isMember(user)) {
     // only logged in users can see a board
     return {
       message: 'you must have member role to comment',
@@ -53,7 +53,7 @@ exports.createComment = async (_, { input: args }, user) => {
 
 // You must be the same commenter or be admin to change comment
 exports.updateComment = async (_, { input: args }, user) => {
-  if (!user.roles || !user.roles.includes(MEMBER_ROLE)) {
+  if (!isMember) {
     // only logged in users can see a board
     return {
       message: 'you must have member role to comment',
@@ -117,27 +117,20 @@ exports.deleteComment = async (_, { input: args }, user) => {
       message: "It looks like you didn't provide a comment id",
     };
   }
-  if (!user || !user.roles) {
-    return {
-      code: '400',
-      success: false,
-      message: 'inadequate permission to delete',
-    };
-  }
   const commentToDelete = db.doc(`/comments/${args.id}`);
   try {
     const commentDoc = await commentToDelete.get();
-    if (!commentDoc.exists) {
+
+    // Return error if document doesn't exist
+    // But only give info about existence of documents to logged in users
+    if (isMember(user) && !commentDoc.exists) {
       return {
         code: '400',
         success: false,
         message: `comment does not exist with id ${args.id}`,
       };
     }
-    if (
-      commentDoc.data().userId === user.userName ||
-      user.roles.includes(ADMIN_ROLE)
-    ) {
+    if (commentDoc.data().userId === user.userName || isAdmin(user)) {
       await commentToDelete.delete();
       return {
         code: '200',

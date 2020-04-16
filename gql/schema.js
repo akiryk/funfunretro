@@ -1,5 +1,5 @@
-const { Queries } = require('./queries/');
-const { Mutations } = require('./mutations/');
+const { Queries } = require('./queries_schema');
+const { Mutations } = require('./mutations_schema');
 
 const typeDefs = [Queries, Mutations];
 

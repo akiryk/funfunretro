@@ -30,7 +30,7 @@ const getUser = (req) => {
       return {
         userName: data.docs[0].data().userName,
         email: data.docs[0].data().email,
-        roles: data.docs[0].data().roles,
+        role: data.docs[0].data().role,
         uid: req.user.uid,
       };
     })

@@ -44,13 +44,13 @@ exports.signup = async (_, { input: args }) => {
 
     // Async await for the new user's token
     const token = await newAuthUser.user.getIdToken();
-    const userAuthId = newAuthUser.user.uid;
+    const uid = newAuthUser.user.uid;
     const userCredentials = {
       userName: newUser.userName,
       email: newUser.email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      uid: userAuthId,
-      roles: [MEMBER_ROLE],
+      uid,
+      role: MEMBER_ROLE,
       boardIds: [],
     };
     await createUser(null, {
@@ -88,12 +88,8 @@ exports.signup = async (_, { input: args }) => {
 
 exports.login = async (_, { input: args }) => {
   const { email, password } = args;
-  const user = {
-    email,
-    password,
-  };
 
-  const { isValid } = validateLoginData(user);
+  const { isValid } = validateLoginData({ email, password });
   if (!isValid) {
     return {
       code: '201',
@@ -104,14 +100,27 @@ exports.login = async (_, { input: args }) => {
   try {
     const data = await firebase
       .auth()
-      .signInWithEmailAndPassword(user.email, user.password);
+      .signInWithEmailAndPassword(email, password);
 
     const token = await data.user.getIdToken();
+
+    const userProfile = await admin
+      .firestore()
+      .collection('users')
+      .where('uid', '==', data.user.uid)
+      .get();
+
+    const { boardIds, role, userName } = userProfile.docs[0].data();
     return {
+      boardIds,
+      email,
+      userName,
+      role,
+      token,
+      uid: data.user.uid,
       code: '200',
       success: true,
-      message: 'success logging in!',
-      token,
+      message: 'Logged in!',
     };
   } catch (error) {
     console.log(error);

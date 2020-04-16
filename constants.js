@@ -2,6 +2,6 @@
  * Constants
  */
 
-exports.MEMBER_ROLE = 'member';
-exports.ADMIN_ROLE = 'admin';
-exports.EDITOR_ROLE = 'editor';
+exports.MEMBER_ROLE = 'MEMBER';
+exports.ADMIN_ROLE = 'ADMIN';
+exports.EDITOR_ROLE = 'EDITOR';

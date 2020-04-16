@@ -159,6 +159,11 @@ exports.Mutations = gql`
     success: Boolean!
     message: String!
     token: String
+    userName: String
+    uid: String
+    email: String
+    boardIds: [String]
+    role: Role
   }
 
   type Mutation {

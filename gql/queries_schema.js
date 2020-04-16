@@ -2,17 +2,22 @@ const { gql } = require('apollo-server-express');
 
 exports.Queries = gql`
   type Query {
+    "Retrieve all boards (only by admins)"
     boards: [Board]
     board(id: ID!): Board
+    "Retrieve the logged in user's boards"
+    myBoards: [Board]
     columns: [Column]
     column(id: ID!): Column
     comments: [Comment]
     comment(id: ID!): Comment
     users: [User]
     user(id: ID!): User
+    "get basic information about the currently logged in user"
+    whoAmI: User
   }
 
-  type ErrorResponse {
+  type QueryResponse {
     message: String!
     code: String!
     success: Boolean!
@@ -27,14 +32,14 @@ exports.Queries = gql`
     comments: [Comment]
     userIds: [String]
     users: [User]
-    error: ErrorResponse
+    response: QueryResponse
   }
   type Column {
     id: ID!
     boardId: String
     name: String
     comments: [Comment]
-    error: ErrorResponse
+    response: QueryResponse
   }
   type Comment {
     id: ID!
@@ -44,7 +49,7 @@ exports.Queries = gql`
     createdAt: String
     userId: String
     user: User
-    error: ErrorResponse
+    response: QueryResponse
   }
   type User {
     userName: String
@@ -60,7 +65,13 @@ exports.Queries = gql`
     There are three possible roles. From lowest privileges to highest, they are:
     'member', 'editor', 'admin'
     """
-    roles: [String!]
-    error: ErrorResponse
+    role: Role
+    response: QueryResponse
+  }
+
+  enum Role {
+    MEMBER
+    EDITOR
+    ADMIN
   }
 `;

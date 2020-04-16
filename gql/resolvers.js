@@ -2,6 +2,7 @@
 const {
   getBoards,
   getBoard,
+  getMyBoards,
   getBoardUsers,
   getBoardComments,
   getBoardColumns,
@@ -19,6 +20,7 @@ const {
 const {
   getUsers,
   getUser,
+  whoAmI,
   getUserBoards,
   getUserComments,
 } = require('./resolvers/user_query_resolvers');
@@ -47,12 +49,14 @@ module.exports = {
   Query: {
     boards: getBoards,
     board: getBoard,
+    myBoards: getMyBoards,
     columns: getColumns,
     column: getColumn,
     comments: getComments,
     comment: getComment,
     users: getUsers,
     user: getUser,
+    whoAmI: whoAmI,
   },
   Mutation: {
     createBoard,

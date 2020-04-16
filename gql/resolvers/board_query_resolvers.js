@@ -4,14 +4,27 @@
 const {
   getCollection,
   getByIdFromCollection,
+  getFromCollectionWhere,
 } = require('../../helpers/gql_helpers');
-const { db } = require('../../utils/firebase');
+const { isMember, isAdmin } = require('../../helpers/resolver_helpers');
+
+const inadequatePermissionsMsg = {
+  id: '',
+  response: {
+    message: 'inadequate permissions, sorry',
+    code: '400',
+    success: false,
+  },
+};
 
 /*
  * Get Boards resolver
- * Permissions: Anyone can view boards
+ * Permissions: Only Admins can view all boards
  */
-exports.getBoards = async () => {
+exports.getBoards = async (_, __, user) => {
+  if (!isAdmin(user)) {
+    return [inadequatePermissionsMsg];
+  }
   try {
     const boards = await getCollection('boards');
     return boards.docs.map((board) => {
@@ -24,7 +37,41 @@ exports.getBoards = async () => {
     console.log(err);
     return {
       id: '',
-      error: {
+      response: {
+        message: err,
+        code: '500',
+        success: false,
+      },
+    };
+  }
+};
+
+/*
+ * Get boards for a given user
+ */
+exports.getMyBoards = async (_, __, user) => {
+  if (!isMember(user)) {
+    return [inadequatePermissionsMsg];
+  }
+  try {
+    const boards = await getFromCollectionWhere({
+      collection: 'boards',
+      targetProp: 'userNames',
+      matches: 'array-contains',
+      sourceProp: user.userName,
+    });
+
+    return boards.docs.map((board) => {
+      return {
+        ...board.data(),
+        id: board.id,
+      };
+    });
+  } catch (err) {
+    console.log(err);
+    return {
+      id: '',
+      response: {
         message: err,
         code: '500',
         success: false,
@@ -37,14 +84,18 @@ exports.getBoards = async () => {
  * Get Board resolver
  * Permissions: Only members, editors, admin, can view a board by id
  */
-exports.getBoard = async (_, { id }, user) => {
+exports.getBoard = async (_, { id = '' } = {}, user) => {
   // any user role will do
-  if (!user.roles) {
+  if (!isAdmin(user)) {
+    return inadequatePermissionsMsg;
+  }
+
+  if (!id) {
     // only logged in users can see a board
     return {
       id: '',
-      error: {
-        message: 'you must be logged in to view a board',
+      response: {
+        message: 'no board id provided',
         code: '400',
         success: false,
       },
@@ -60,7 +111,7 @@ exports.getBoard = async (_, { id }, user) => {
     console.log(error);
     return {
       id: '',
-      error: {
+      response: {
         message: error,
         code: '500',
         success: false,
@@ -70,12 +121,11 @@ exports.getBoard = async (_, { id }, user) => {
 };
 
 exports.getBoardUsers = async (board, _, user) => {
-  if (!user.roles) {
-    // only logged in users can see a board
+  if (!isMember(user)) {
     return [
       {
         id: '',
-        error: {
+        response: {
           message: 'you must be logged in to view users of a board',
           code: '400',
           success: false,
@@ -84,10 +134,12 @@ exports.getBoardUsers = async (board, _, user) => {
     ];
   }
   try {
-    const boardUsers = await db
-      .collection('users')
-      .where('boardIds', 'array-contains', board.id)
-      .get();
+    const boardUsers = await getFromCollectionWhere({
+      collection: 'users',
+      targetProp: 'boardIds',
+      matches: 'array-contains',
+      sourceProp: board.id,
+    });
     return boardUsers.docs.map((user) => {
       return {
         ...user.data(),
@@ -98,7 +150,7 @@ exports.getBoardUsers = async (board, _, user) => {
     console.log(error);
     return {
       id: '',
-      error: {
+      response: {
         message: error,
         code: '500',
         success: false,
@@ -108,11 +160,11 @@ exports.getBoardUsers = async (board, _, user) => {
 };
 
 exports.getBoardColumns = async (board, _, user) => {
-  if (!user.roles) {
+  if (!isMember(user)) {
     return [
       {
         id: '',
-        error: {
+        response: {
           message: 'must be logged in to view colums',
           code: '400',
           success: false,
@@ -121,10 +173,12 @@ exports.getBoardColumns = async (board, _, user) => {
     ];
   }
   try {
-    const boardColumns = await db
-      .collection('columns')
-      .where('boardId', '==', board.id)
-      .get();
+    const boardColumns = await getFromCollectionWhere({
+      collection: 'columns',
+      targetProp: 'boardId',
+      matches: '==',
+      sourceProp: board.id,
+    });
     return boardColumns.docs.map((column) => {
       return {
         ...column.data(),
@@ -134,7 +188,7 @@ exports.getBoardColumns = async (board, _, user) => {
   } catch (error) {
     return {
       id: '',
-      error: {
+      response: {
         message: error,
         code: '500',
         success: false,
@@ -144,12 +198,12 @@ exports.getBoardColumns = async (board, _, user) => {
 };
 
 exports.getBoardComments = async (board, _, user) => {
-  if (!user.roles) {
+  if (!isMember(user)) {
     // only logged in users can see a board
     return [
       {
         id: '',
-        error: {
+        response: {
           message: 'you must be logged in to view comments on a board',
           code: '400',
           success: false,
@@ -158,10 +212,13 @@ exports.getBoardComments = async (board, _, user) => {
     ];
   }
   try {
-    const boardComments = await db
-      .collection('comments')
-      .where('boardId', '==', board.id)
-      .get();
+    const boardComments = await getFromCollectionWhere({
+      collection: 'comments',
+      targetProp: 'boardId',
+      matches: '==',
+      sourceProp: board.id,
+    });
+
     return boardComments.docs.map((comment) => {
       return {
         ...comment.data(),
@@ -172,7 +229,7 @@ exports.getBoardComments = async (board, _, user) => {
     console.log(error);
     return {
       id: '',
-      error: {
+      response: {
         message: error,
         code: '500',
         success: false,
