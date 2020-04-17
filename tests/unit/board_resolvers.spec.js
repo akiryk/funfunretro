@@ -1,6 +1,7 @@
 const {
   getBoards,
   getBoard,
+  getMyBoards,
   getBoardUsers,
   getBoardColumns,
   getBoardComments,
@@ -10,11 +11,18 @@ const {
   getByIdFromCollection,
   getFromCollectionWhere,
 } = require('../../helpers/gql_helpers');
+const {
+  mockListOf2Boards,
+  mockListOfMyBoards,
+} = require('../mocks/mockBoardData');
 
 jest.mock('../../helpers/gql_helpers.js');
 
 const mockBoard = {};
 const mockArgs = {};
+const mockUserAdmin = {
+  role: 'ADMIN',
+};
 // logged in users will have a role property of 'MEMBER', 'EDITOR', or 'ADMIN'
 const mockUserMember = {
   role: 'MEMBER',
@@ -24,86 +32,97 @@ const mockUserNonMember = {
 };
 
 describe('Board Resolvers', () => {
-  describe('Get list of all boards', () => {
-    it('gets all boards', async () => {
-      getCollection.mockImplementation(() => {
-        return Promise.resolve({
-          docs: [
-            {
-              data() {
-                return {
-                  name: 'first board',
-                  desc: '',
-                };
-              },
-              id: '111',
-            },
-            {
-              data() {
-                return true;
-              },
-              id: '222',
-            },
-          ],
+  describe('getBoards resolver', () => {
+    describe('when user is an admin', () => {
+      it('gets all boards', async () => {
+        getCollection.mockImplementation(() => {
+          return Promise.resolve(mockListOf2Boards);
         });
+        const boards = await getBoards(mockBoard, mockArgs, mockUserAdmin);
+        expect(boards).toHaveLength(2);
+        expect(boards).not.toHaveLength(4);
+        expect(boards[0].name).toBe('first board');
       });
-      const boards = await getBoards();
-      expect(boards).toHaveLength(2);
-      expect(boards).not.toHaveLength(4);
-      expect(boards[0].name).toBe('first board');
-    });
 
-    it('returns an error if it fails to retrieve boards from the database', async () => {
-      getCollection.mockImplementation(() =>
-        Promise.reject('something went wrong')
-      );
-      const board = await getBoards(null, {}, mockUserMember);
-      expect(board.response.success).toBe(false);
-      expect(board.response.message).toBe('something went wrong');
+      it('returns an error if it fails to retrieve boards from the database', async () => {
+        getCollection.mockImplementation(() =>
+          Promise.reject('something went wrong')
+        );
+        const board = await getBoards(null, {}, mockUserAdmin);
+        expect(board.response.success).toBe(false);
+        expect(board.response.message).toBe('something went wrong');
+      });
     });
   });
 
-  describe('Get a board by ID', () => {
-    it('gets a board by ID if requester is a logged in user', async () => {
-      getByIdFromCollection.mockImplementation(() => {
-        return Promise.resolve({
-          data: () => ({
-            name: 'new board',
-            desc: '',
-          }),
-          id: '111',
+  describe('getBoard resolver (gets board by ID)', () => {
+    describe('when user is an admin', () => {
+      it('gets a board by ID', async () => {
+        getByIdFromCollection.mockImplementation(() => {
+          return Promise.resolve({
+            data: () => ({
+              name: 'new board',
+              desc: '',
+            }),
+            id: '111',
+          });
         });
+        const board = await getBoard(null, { id: '111' }, mockUserAdmin);
+        expect(board['name']).toBe('new board');
       });
-      const board = await getBoard(null, { id: '111' }, mockUserMember);
-      expect(board['name']).toBe('new board');
-    });
 
-    it('returns an error if user us not a logged in user', async () => {
-      const board = await getBoard(null, { id: '111' }, mockUserNonMember);
-      expect(board.response.success).toBe(false);
-      expect(board.response.message).toBe(
-        'you must be logged in to view a board'
-      );
-    });
+      it('returns an error if no board id is provided as an argument', async () => {
+        const board = await getBoard(null, {}, mockUserAdmin);
+        expect(board.response.success).toBe(false);
+        expect(board.response.code).toBe('400');
+        expect(board.response).toHaveProperty('message');
+      });
 
-    it('returns an error if no board id is provided as an argument', async () => {
-      const board = await getBoard(null, {}, mockUserNonMember);
-      expect(board.response.success).toBe(false);
-      expect(board.response.code).toBe('400');
-      expect(board.response).toHaveProperty('message');
-    });
-
-    it('returns an error if database returns any kind of error', async () => {
-      getByIdFromCollection.mockImplementation(() =>
-        Promise.reject('there was a problem getting board by id')
-      );
-      const board = await getBoard(null, { id: '123' }, mockUserMember);
-      expect(board.response.success).toBe(false);
-      expect(board.response.code).toBe('500');
-      expect(board.response).toHaveProperty('message');
+      it('returns an error if database returns any kind of error', async () => {
+        getByIdFromCollection.mockImplementation(() =>
+          Promise.reject('there was a problem getting board by id')
+        );
+        const board = await getBoard(null, { id: '123' }, mockUserAdmin);
+        expect(board.response.success).toBe(false);
+        expect(board.response.code).toBe('500');
+        expect(board.response).toHaveProperty('message');
+      });
     });
   });
 
+  describe('getMyBoards resolver', () => {
+    describe('when user is logged in as a member', () => {
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('gets all boards for which the user is a member', async () => {
+        getFromCollectionWhere.mockImplementation(() => {
+          return Promise.resolve(mockListOfMyBoards);
+        });
+        const boards = await getMyBoards({}, {}, mockUserMember);
+        expect(boards).toHaveLength(2);
+        expect(boards).not.toHaveLength(4);
+        expect(boards[0].name).toBe('first board');
+      });
+    });
+
+    describe('when user is NOT logged in as a member', () => {
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+      it('does not return any boards', async () => {
+        const boards = await getMyBoards({}, {}, mockUserNonMember);
+        expect(boards[0]).not.toHaveProperty('name');
+        expect(boards[0]).not.toHaveProperty('desc');
+      });
+      it('returns an error message', async () => {
+        const boards = await getMyBoards({}, {}, mockUserNonMember);
+        expect(boards[0]).toHaveProperty('response');
+        expect(boards[0].id).toEqual('');
+        expect(boards[0].response.code).toEqual('400');
+      });
+    });
+  });
   it('gets a list of board users based on a board id', async () => {
     getFromCollectionWhere.mockImplementation(() => {
       return Promise.resolve({

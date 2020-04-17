@@ -37,3 +37,6 @@ exports.getFromCollectionWhere = ({
   matches,
   sourceProp,
 }) => db.collection(collection).where(targetProp, matches, sourceProp).get();
+
+exports.getDocFromCollection = (doc, collection) =>
+  db.collection(collection).doc(doc).get();

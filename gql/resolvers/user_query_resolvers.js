@@ -5,8 +5,13 @@ const {
   getCollection,
   getByIdFromCollection,
   getFromCollectionWhere,
+  getDocFromCollection,
 } = require('../../helpers/gql_helpers');
 const { isMember, isAdmin } = require('../../helpers/resolver_helpers');
+const {
+  getErrorResponse,
+  getSuccessResponse,
+} = require('../../helpers/resolver_helpers');
 
 const errorMsg = {
   response: {
@@ -18,12 +23,6 @@ const errorMsg = {
   uid: '',
 };
 
-const successResponse = {
-  message: 'Yes, it worked',
-  code: '200',
-  success: true,
-};
-
 exports.getUsers = async (_, __, user) => {
   if (!isMember(user)) {
     return [errorMsg];
@@ -33,7 +32,9 @@ exports.getUsers = async (_, __, user) => {
     return users.docs.map((user) => {
       return {
         ...user.data(),
+        // for ease of use, let people query for id or userName even though they're the same
         id: user.id,
+        userName: user.id,
       };
     });
   } catch (error) {
@@ -46,11 +47,18 @@ exports.whoAmI = async (_, __, user) => {
     return errorMsg;
   }
   try {
-    const userDoc = await getByIdFromCollection(user.userName, 'users');
-    return {
-      ...userDoc.data(),
-      response: successResponse,
-    };
+    const doc = await getDocFromCollection(user.id, 'users');
+    if (doc.exists) {
+      return {
+        ...doc.data(),
+        userName: user.id,
+        id: user.id,
+        response: getSuccessResponse(),
+      };
+    } else {
+      console.log('No such document!');
+      return errorMsg;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -69,10 +77,20 @@ exports.getUser = async (_, { id: userId }, user) => {
   }
   try {
     const user = await getByIdFromCollection(userId, 'users');
-    return {
-      ...user.data(),
-      response: successResponse,
-    };
+    if (user.exists) {
+      return {
+        ...user.data(),
+        userName: userId,
+        id: userId,
+        response: getSuccessResponse(),
+      };
+    } else {
+      return {
+        id: '',
+        uid: '',
+        response: getErrorResponse("Welp, there isn't a user by that name."),
+      };
+    }
   } catch (error) {
     console.log(error);
   }
@@ -92,7 +110,7 @@ exports.getUserBoards = async (userDoc, _, user) => {
       return {
         ...board.data(),
         id: board.id,
-        response: successResponse,
+        response: getSuccessResponse(),
       };
     });
   } catch (error) {
@@ -101,20 +119,29 @@ exports.getUserBoards = async (userDoc, _, user) => {
 };
 
 exports.getUserComments = async (userDoc, _, user) => {
-  if (!isMember(user)) {
-    return [errorMsg];
+  if (!isAdmin(user)) {
+    return [
+      {
+        id: '',
+        uid: '',
+        response: getErrorResponse(
+          'You must be an admin to request user comments.'
+        ),
+      },
+    ];
   }
   try {
-    const userComments = await admin
-      .firestore()
-      .collection('comments')
-      .where('userId', '==', userDoc.id)
-      .get();
+    const userComments = await getFromCollectionWhere({
+      collection: 'comments',
+      targetProp: 'userName',
+      matches: '==',
+      sourceProp: userDoc.id,
+    });
     return userComments.docs.map((comment) => {
       return {
         ...comment.data(),
         id: comment.id,
-        response: successResponse,
+        response: getSuccessResponse(),
       };
     });
   } catch (error) {

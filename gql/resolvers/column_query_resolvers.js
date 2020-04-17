@@ -36,7 +36,14 @@ exports.getColumns = async (_, __, user) => {
 
 exports.getColumn = async (_, { id }, user) => {
   if (!isAdmin(user)) {
-    return errorMsg;
+    return {
+      id: '',
+      response: {
+        message: 'you must be an Admin to get a single column',
+        code: '400',
+        success: false,
+      },
+    };
   }
   try {
     const column = await getByIdFromCollection(id, 'columns');
@@ -50,23 +57,36 @@ exports.getColumn = async (_, { id }, user) => {
 };
 
 exports.getColumnComments = async (column, _, user) => {
-  if (!isAdmin(user)) {
-    return [errorMsg]; // needs to be an array
-  }
-  try {
-    const columnComments = await getFromCollectionWhere({
-      collection: 'comments',
-      targetProp: 'columnId',
-      matches: '==',
-      sourceProp: column.id,
-    });
-    return columnComments.docs.map((comment) => {
-      return {
-        ...comment.data(),
-        id: comment.id,
-      };
-    });
-  } catch (error) {
-    console.log(error);
+  if (
+    (user.boardIds && user.boardIds.includes(column.boardId)) ||
+    isAdmin(user)
+  ) {
+    try {
+      const columnComments = await getFromCollectionWhere({
+        collection: 'comments',
+        targetProp: 'columnId',
+        matches: '==',
+        sourceProp: column.id,
+      });
+      return columnComments.docs.map((comment) => {
+        return {
+          ...comment.data(),
+          id: comment.id,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return [
+      {
+        id: '',
+        response: {
+          message: 'you must be an Admin to get all comments for a column',
+          code: '400',
+          success: false,
+        },
+      },
+    ];
   }
 };

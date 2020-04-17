@@ -49,6 +49,7 @@ exports.Queries = gql`
     createdAt: String
     userId: String
     user: User
+    likes: Int
     response: QueryResponse
   }
   type User {

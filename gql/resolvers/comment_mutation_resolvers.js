@@ -3,7 +3,8 @@
  */
 const { admin, db } = require('../../utils/firebase');
 const {
-  getGenericMutationResponseForError,
+  getErrorResponse,
+  getSuccessResponse,
 } = require('../../helpers/resolver_helpers');
 const { isMember, isAdmin } = require('../../helpers/resolver_helpers');
 
@@ -47,7 +48,7 @@ exports.createComment = async (_, { input: args }, user) => {
     };
   } catch (error) {
     console.log(error);
-    return getGenericMutationResponseForError('create', 'comment');
+    return getErrorResponse(error);
   }
 };
 
@@ -105,7 +106,34 @@ exports.updateComment = async (_, { input: args }, user) => {
     };
   } catch (error) {
     console.log(error);
-    return getGenericMutationResponseForError('update', 'comment');
+    return getErrorResponse(error);
+  }
+};
+
+exports.likeComment = async (_, { input }, user) => {
+  if (!isMember) {
+    return getErrorResponse('You much be logged in');
+  }
+  const { id: commentId, boardId } = input;
+  // if you are a logged in user who is on the same board as the comment, you can like it (only logged in users will have boardIds)
+  if (user.boardIds && user.boardIds.includes(boardId)) {
+    try {
+      const commentToUpdate = db.collection('comments').doc(commentId);
+      const doc = await commentToUpdate.get();
+      if (!doc.exists) {
+        return getErrorResponse(`Comment with id ${commentId} does not exist`);
+      }
+      const increment = admin.firestore.FieldValue.increment(1);
+      await commentToUpdate.update({ likes: increment });
+      return getSuccessResponse('Successfully updated comment');
+    } catch (error) {
+      console.log(error);
+      return getErrorResponse(error);
+    }
+  } else {
+    return getErrorResponse(
+      'You cannot like comments that are not on one of your boards'
+    );
   }
 };
 
@@ -146,6 +174,6 @@ exports.deleteComment = async (_, { input: args }, user) => {
     }
   } catch (error) {
     console.log(error);
-    return getGenericMutationResponseForError('delete', 'comment');
+    return getErrorResponse(error);
   }
 };

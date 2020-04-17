@@ -5,13 +5,13 @@ const {
   getCollection,
   getByIdFromCollection,
 } = require('../../helpers/gql_helpers');
-const { isMember } = require('../../helpers/resolver_helpers');
+const { isMember, isAdmin } = require('../../helpers/resolver_helpers');
 
 const permissionsErrorMessage = [
   {
     id: '',
-    error: {
-      message: 'you must be logged in',
+    response: {
+      message: 'you must be an admin to get comment info on its own',
       code: '400',
       success: false,
     },
@@ -19,7 +19,7 @@ const permissionsErrorMessage = [
 ];
 
 exports.getComments = async (_, __, user) => {
-  if (!isMember(user)) {
+  if (!isAdmin(user)) {
     return permissionsErrorMessage;
   }
   try {
@@ -36,8 +36,15 @@ exports.getComments = async (_, __, user) => {
 };
 
 exports.getComment = async (_, { id }, user) => {
-  if (!isMember(user)) {
-    return permissionsErrorMessage;
+  if (!isAdmin(user)) {
+    return {
+      id: '',
+      response: {
+        message: 'you must be an admin to get comment info on its own',
+        code: '400',
+        success: false,
+      },
+    };
   }
   try {
     const comment = await getByIdFromCollection(id, 'comments');
@@ -55,11 +62,12 @@ exports.getCommentUser = async (comment, _, user) => {
     return permissionsErrorMessage;
   }
   try {
-    const commentUser = await getByIdFromCollection(comment.userId, 'users');
+    // a user's userName is their user ID. They have a separate uid for authentication
+    const commentUser = await getByIdFromCollection(comment.userName, 'users');
     if (commentUser.data) {
       return {
         ...commentUser.data(),
-        id: comment.userId,
+        id: comment.userName,
       };
     }
     return;

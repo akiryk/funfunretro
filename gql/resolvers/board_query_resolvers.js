@@ -6,7 +6,13 @@ const {
   getByIdFromCollection,
   getFromCollectionWhere,
 } = require('../../helpers/gql_helpers');
-const { isMember, isAdmin } = require('../../helpers/resolver_helpers');
+const {
+  isMember,
+  isAdmin,
+  getSuccessResponse,
+  getErrorResponse,
+  getBoardData,
+} = require('../../helpers/resolver_helpers');
 
 const inadequatePermissionsMsg = {
   id: '',
@@ -27,21 +33,12 @@ exports.getBoards = async (_, __, user) => {
   }
   try {
     const boards = await getCollection('boards');
-    return boards.docs.map((board) => {
-      return {
-        ...board.data(),
-        id: board.id,
-      };
-    });
+    return boards.docs.map(getBoardData);
   } catch (err) {
     console.log(err);
     return {
       id: '',
-      response: {
-        message: err,
-        code: '500',
-        success: false,
-      },
+      response: getErrorResponse(err, '500'),
     };
   }
 };
@@ -54,29 +51,29 @@ exports.getMyBoards = async (_, __, user) => {
     return [inadequatePermissionsMsg];
   }
   try {
+    console.log(user);
     const boards = await getFromCollectionWhere({
       collection: 'boards',
       targetProp: 'userNames',
       matches: 'array-contains',
-      sourceProp: user.userName,
+      sourceProp: user.id,
     });
-
+    console.log('AT TWO');
     return boards.docs.map((board) => {
       return {
         ...board.data(),
         id: board.id,
+        response: getSuccessResponse(),
       };
     });
   } catch (err) {
     console.log(err);
-    return {
-      id: '',
-      response: {
-        message: err,
-        code: '500',
-        success: false,
+    return [
+      {
+        id: '',
+        response: getErrorResponse('Server problem getting my boards', '500'),
       },
-    };
+    ];
   }
 };
 
@@ -85,38 +82,38 @@ exports.getMyBoards = async (_, __, user) => {
  * Permissions: Only members, editors, admin, can view a board by id
  */
 exports.getBoard = async (_, { id = '' } = {}, user) => {
-  // any user role will do
-  if (!isAdmin(user)) {
+  // only admins or users who belong to this board may see it
+  if ((user.boardIds && user.boardIds.includes(id)) || isAdmin(user)) {
+    if (!id) {
+      // only logged in users can see a board
+      return {
+        id: '',
+        response: {
+          message: 'no board id provided',
+          code: '400',
+          success: false,
+        },
+      };
+    }
+    try {
+      const board = await getByIdFromCollection(id, 'boards');
+      return {
+        ...board.data(),
+        id,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        id: '',
+        response: {
+          message: error,
+          code: '500',
+          success: false,
+        },
+      };
+    }
+  } else {
     return inadequatePermissionsMsg;
-  }
-
-  if (!id) {
-    // only logged in users can see a board
-    return {
-      id: '',
-      response: {
-        message: 'no board id provided',
-        code: '400',
-        success: false,
-      },
-    };
-  }
-  try {
-    const board = await getByIdFromCollection(id, 'boards');
-    return {
-      ...board.data(),
-      id,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      id: '',
-      response: {
-        message: error,
-        code: '500',
-        success: false,
-      },
-    };
   }
 };
 

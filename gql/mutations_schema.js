@@ -65,6 +65,13 @@ exports.Mutations = gql`
     text: String!
   }
 
+  input LikeCommentInput {
+    "The comment id"
+    id: String!
+    "The id of the board that contains the comment"
+    boardId: String!
+  }
+
   interface MutationResponse {
     """
     Every mutation should implement MutationResponse, a consistent
@@ -94,6 +101,12 @@ exports.Mutations = gql`
     success: Boolean!
     message: String!
     comment: Comment
+  }
+
+  type LikeCommentResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
   }
 
   type CreateBoardResponse implements MutationResponse {
@@ -176,6 +189,7 @@ exports.Mutations = gql`
     updateBoard(input: UpdateBoardInput): UpdateBoardResponse!
     updateColumn(input: UpdateColumnInput): UpdateColumnResponse!
     updateComment(input: UpdateCommentInput): UpdateCommentResponse!
+    likeComment(input: LikeCommentInput): LikeCommentResponse!
     deleteColumn(input: DeleteColumnInput): DeleteColumnResponse!
     deleteComment(input: DeleteCommentInput): DeleteCommentResponse!
     deleteUser(input: DeleteUserInput): DeleteUserResponse!

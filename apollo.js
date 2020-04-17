@@ -28,10 +28,8 @@ const getUser = (req) => {
     })
     .then((data) => {
       return {
-        userName: data.docs[0].data().userName,
-        email: data.docs[0].data().email,
-        role: data.docs[0].data().role,
-        uid: req.user.uid,
+        ...data.docs[0].data(),
+        id: data.docs[0].id,
       };
     })
     .catch((err) => {
