@@ -15,8 +15,9 @@ exports.Mutations = gql`
   }
 
   input CreateCommentInput {
+    boardId: String!
     columnId: String!
-    userId: String!
+    userName: String!
     text: String!
   }
 
@@ -107,6 +108,7 @@ exports.Mutations = gql`
     code: String!
     success: Boolean!
     message: String!
+    userTotalLikes: Int
   }
 
   type CreateBoardResponse implements MutationResponse {
@@ -190,6 +192,7 @@ exports.Mutations = gql`
     updateColumn(input: UpdateColumnInput): UpdateColumnResponse!
     updateComment(input: UpdateCommentInput): UpdateCommentResponse!
     likeComment(input: LikeCommentInput): LikeCommentResponse!
+    unlikeComment(input: LikeCommentInput): LikeCommentResponse!
     deleteColumn(input: DeleteColumnInput): DeleteColumnResponse!
     deleteComment(input: DeleteCommentInput): DeleteCommentResponse!
     deleteUser(input: DeleteUserInput): DeleteUserResponse!

@@ -30,7 +30,8 @@ exports.Queries = gql`
     columnIds: [String]
     columns: [Column]
     comments: [Comment]
-    userIds: [String]
+    "The userName is the user id"
+    userNames: [String]
     users: [User]
     response: QueryResponse
   }
@@ -47,18 +48,19 @@ exports.Queries = gql`
     text: String
     boardId: String
     createdAt: String
-    userId: String
+    "The userName is the user id"
+    userName: String
     user: User
     likes: Int
     response: QueryResponse
   }
   type User {
-    userName: String
+    "For userName, use the user id"
     email: String
     boardIds: [String]
     boards: [Board]
     comments: [Comment]
-    "User id is their username"
+    "User id is their userName"
     id: ID!
     "userAuthId is the user UID from Authenticated Users table"
     uid: String!

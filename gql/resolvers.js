@@ -16,7 +16,6 @@ const {
   getComments,
   getComment,
   getCommentUser,
-  getCommentLikes,
 } = require('./resolvers/comment_query_resolvers');
 const {
   getUsers,
@@ -40,6 +39,7 @@ const {
   updateComment,
   deleteComment,
   likeComment,
+  unlikeComment,
 } = require('./resolvers/comment_mutation_resolvers');
 const {
   createUser,
@@ -71,6 +71,7 @@ module.exports = {
     updateColumn,
     updateComment,
     likeComment,
+    unlikeComment,
     deleteComment,
     deleteColumn,
     deleteUser,
