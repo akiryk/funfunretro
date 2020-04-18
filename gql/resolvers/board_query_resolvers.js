@@ -27,8 +27,8 @@ const inadequatePermissionsMsg = {
  * Get Boards resolver
  * Permissions: Only Admins can view all boards
  */
-exports.getBoards = async (_, __, user) => {
-  if (!isAdmin(user)) {
+exports.getBoards = async ({ role }) => {
+  if (!isAdmin(role)) {
     return [inadequatePermissionsMsg];
   }
   try {
@@ -81,9 +81,9 @@ exports.getMyBoards = async (_, __, user) => {
  * Get Board resolver
  * Permissions: Only members, editors, admin, can view a board by id
  */
-exports.getBoard = async (_, { id = '' } = {}, user) => {
+exports.getBoardById = async (id, { boardIds, role }) => {
   // only admins or users who belong to this board may see it
-  if ((user.boardIds && user.boardIds.includes(id)) || isAdmin(user)) {
+  if ((boardIds && boardIds.includes(id)) || isAdmin(role)) {
     if (!id) {
       // only logged in users can see a board
       return {

@@ -23,7 +23,7 @@ exports.createComment = async (_, { input }, user) => {
     return getErrorResponse('Cannot leave text field empty');
   }
 
-  // User must belong to a board in order to like its comments
+  // User must belong to a board in order to add a comment
   if (user.boardIds && user.boardIds.includes(boardId)) {
     try {
       const comment = {
@@ -56,55 +56,43 @@ exports.createComment = async (_, { input }, user) => {
 };
 
 // You must be the same commenter or be admin to change comment
-exports.updateComment = async (_, { input: args }, user) => {
-  if (!isMember) {
-    // only logged in users can see a board
-    return {
-      message: 'you must have member role to comment',
-      code: '400',
-      success: false,
-    };
+exports.updateComment = async (_, { input }, user) => {
+  const { id, text } = input;
+
+  // the user.id is the user's userName
+  // User must be logged in as a member at least in order to add a comment
+  if (!isMember(user)) {
+    return getErrorResponse('you must have member role to comment');
   }
 
-  const commentId = args.id;
+  // The comment must have text
+  const trimmedText = text.trim();
+  if (trimmedText === '') {
+    return getErrorResponse('Cannot leave text field empty');
+  }
+
   try {
-    const commentToUpdate = db.collection('comments').doc(commentId);
-    const doc = await commentToUpdate.get();
-    if (!doc.exists) {
-      return {
-        code: '400',
-        success: false,
-        message: `Comment with id ${commentId} does not exist`,
-      };
+    const commentRef = db.doc(`comments/${id}`);
+    const commentDoc = await commentRef.get();
+
+    if (!commentDoc.exists) {
+      return getErrorResponse(`Comment with id ${id} does not exist`);
     }
-    const text = args.text.trim();
-    if (text === '') {
-      return {
-        code: '400',
-        success: false,
-        message: `No text was provided for an update`,
-      };
+
+    // User can only update their own comments (except for admins)
+    if (user.userName !== commentDoc.data().userName && !isAdmin(user)) {
+      return getErrorResponse('A comment may only be edited by its author');
     }
-    const oldDoc = doc.data();
-    if (oldDoc.userId !== user.userName) {
-      return {
-        code: '400',
-        success: false,
-        message: `Only the creator of a comment or an admin may edit the comment`,
-      };
-    }
-    const newDoc = {
-      ...oldDoc,
-      text,
-      id: doc.id,
-    };
-    await commentToUpdate.update({ text });
+
+    await commentRef.update({ text });
     return {
       code: '200',
       success: true,
       message: `Successfully updated comment`,
       comment: {
-        ...newDoc,
+        ...commentDoc.data(),
+        text,
+        id,
       },
     };
   } catch (error) {
@@ -272,41 +260,26 @@ exports.unlikeComment = async (_, { input }, user) => {
   }
 };
 
-exports.deleteComment = async (_, { input: args }, user) => {
-  if (!args || !args.id) {
-    return {
-      code: '400',
-      success: false,
-      message: "It looks like you didn't provide a comment id",
-    };
-  }
-  const commentToDelete = db.doc(`/comments/${args.id}`);
+exports.deleteComment = async (_, { input }, user) => {
+  const { id } = input;
+
+  const commentRef = db.doc(`/comments/${id}`);
   try {
-    const commentDoc = await commentToDelete.get();
+    const commentDoc = await commentRef.get();
 
     // Return error if document doesn't exist
     // But only give info about existence of documents to logged in users
-    if (isMember(user) && !commentDoc.exists) {
-      return {
-        code: '400',
-        success: false,
-        message: `comment does not exist with id ${args.id}`,
-      };
+    if (!commentDoc.exists) {
+      return getErrorResponse(`Comment with id ${id} does not exist`);
     }
-    if (commentDoc.data().userId === user.userName || isAdmin(user)) {
-      await commentToDelete.delete();
-      return {
-        code: '200',
-        success: true,
-        message: `Comment ${args.id} deleted successfully`,
-      };
-    } else {
-      return {
-        message: 'insufficient privileges to delete comment',
-        code: '400',
-        success: false,
-      };
+
+    // User can only update their own comments (except for admins)
+    if (user.userName !== commentDoc.data().userName && !isAdmin(user)) {
+      return getErrorResponse('A comment may only be deleted by its author');
     }
+
+    await commentRef.delete();
+    return getSuccessResponse(`Comment ${id} deleted successfully`);
   } catch (error) {
     console.log(error);
     return getErrorResponse(error);

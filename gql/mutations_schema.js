@@ -7,6 +7,8 @@ exports.Mutations = gql`
   input CreateBoardInput {
     name: String!
     desc: String
+    maxLikes: Int
+    userNames: [String]
   }
 
   input CreateColumnInput {
@@ -54,6 +56,8 @@ exports.Mutations = gql`
     id: String!
     name: String
     desc: String
+    maxLikes: Int
+    userNames: [String]
   }
 
   input UpdateColumnInput {

@@ -1,7 +1,7 @@
 // Queries
 const {
   getBoards,
-  getBoard,
+  getBoardById,
   getMyBoards,
   getBoardUsers,
   getBoardComments,
@@ -49,8 +49,9 @@ const { signup, login } = require('./resolvers/auth_user_mutation_resolvers');
 
 module.exports = {
   Query: {
-    boards: getBoards,
-    board: getBoard,
+    boards: (_, __, { user }) => getBoards(user),
+    board: (_, { id }, { user }) =>
+      getBoardById(id, { role: user.role, boardIds: user.boardIds }),
     myBoards: getMyBoards,
     columns: getColumns,
     column: getColumn,

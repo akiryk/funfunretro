@@ -2,7 +2,11 @@
  * Board Mutations
  */
 const { db, admin } = require('../../utils/firebase');
-const { isMember } = require('../../helpers/resolver_helpers');
+const { isMember, isEditor } = require('../../helpers/resolver_helpers');
+const {
+  getErrorResponse,
+  getSuccessResponse,
+} = require('../../helpers/resolver_helpers');
 
 const errorMsg = {
   message: 'Editor privileges or above are required',
@@ -17,74 +21,89 @@ const errorMsg = {
  * @param {object} args - the arguments passed to the mutation's input
  * @param {object} user - the logged in user
  */
-exports.createBoard = async (_, { input: args }, user) => {
-  if (isMember(user)) {
-    return errorMsg;
+exports.createBoard = async (_, { input }, user) => {
+  if (!isEditor(user)) {
+    return getErrorResponse('you must be editor or admin to create a board');
   }
+
+  const {
+    name,
+    desc = 'An amazing fun fun board!',
+    maxLikes = 5,
+    userNames = [],
+  } = input;
+
   try {
-    const newBoard = await db.collection('boards').add({
-      name: args.name,
-      desc: args.desc,
+    await db.collection('boards').add({
+      name,
+      desc,
+      maxLikes,
+      userNames,
+      likesByUser: {},
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      userIds: [],
     });
-    return {
-      code: '200',
-      success: true,
-      message: `Successfully created a new board, ${args.name}, id:${newBoard.id}`,
-      board: {
-        name: args.name,
-        desc: args.desc,
-        id: newBoard.id,
-      },
-    };
   } catch (error) {
     console.log(error);
-    return {
-      code: '400',
-      success: false,
-      message: 'Unable to create a new board',
-    };
+    return getErrorResponse('Unable to create a new board');
   }
+  return {
+    code: '200',
+    success: true,
+    message: `Successfully created a new board`,
+    board: {
+      name,
+      desc,
+      maxLikes,
+      userNames,
+      id: newBoard.id,
+    },
+  };
 };
 
-exports.updateBoard = async (_, { input: args }, user) => {
-  if (isMember(user)) {
-    return errorMsg;
+exports.updateBoard = async (_, { input }, user) => {
+  if (!isEditor(user)) {
+    return getErrorResponse('you must be editor or admin to update a board');
   }
-  const boardId = args.id;
+
+  const { name, desc, maxLikes, userNames, id } = input;
+
   try {
-    const boardToUpdate = db.collection('boards').doc(boardId);
-    const boardDoc = await boardToUpdate.get();
+    const boardRef = db.doc(`boards/${id}`);
+    const boardDoc = await boardRef.get();
     if (!boardDoc.exists) {
-      return {
-        code: '400',
-        success: false,
-        message: `Board with id ${boardId} does not exist`,
-      };
+      return getErrorResponse(`Board with id ${boardId} does not exist`);
     }
+
+    // Create an object that will contain all the updates
     const updatedBoardData = {};
-    if (args.name && args.name.trim() !== '') {
-      updatedBoardData.name = args.name.trim();
+    if (name && name.trim() !== '') {
+      updatedBoardData.name = name.trim();
     }
-    if (args.desc && args.desc.trim() !== '') {
-      updatedBoardData.desc = args.desc.trim();
+    if (desc && desc.trim() !== '') {
+      updatedBoardData.desc = desc.trim();
     }
+    if (maxLikes) {
+      updatedBoardData.maxLikes = maxLikes;
+    }
+    if (userNames && userNames.length > 0) {
+      updatedBoardData.userNames = Array.from(
+        new Set([...boardDoc.data().userNames, ...userNames])
+      );
+    }
+    console.log('Nesms', updatedBoardData.userNames);
     if (Object.keys(updatedBoardData).length === 0) {
-      return {
-        code: '400',
-        success: false,
-        message: `No data was provided for an update`,
-      };
+      return getErrorResponse(`No data was provided for an update`);
     }
-    await boardToUpdate.update({
+
+    await boardRef.update({
       ...updatedBoardData,
     });
+
     const oldDoc = boardDoc.data();
     return {
       code: '200',
       success: true,
-      message: `Successfully updated board ${boardId}`,
+      message: `Successfully updated board ${id}`,
       board: {
         ...oldDoc,
         ...updatedBoardData,

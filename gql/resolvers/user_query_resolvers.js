@@ -27,14 +27,15 @@ exports.getUsers = async (_, __, user) => {
   if (!isMember(user)) {
     return [errorMsg];
   }
+  const { userName } = user;
   try {
     const users = await getCollection('users');
     return users.docs.map((user) => {
       return {
         ...user.data(),
         // for ease of use, let people query for id or userName even though they're the same
-        id: user.id,
-        userName: user.id,
+        id: userName,
+        userName,
       };
     });
   } catch (error) {
@@ -46,13 +47,14 @@ exports.whoAmI = async (_, __, user) => {
   if (!isMember(user)) {
     return errorMsg;
   }
+  const { userName } = user;
   try {
-    const doc = await getDocFromCollection(user.id, 'users');
+    const doc = await getDocFromCollection(userName, 'users');
     if (doc.exists) {
       return {
         ...doc.data(),
-        userName: user.id,
-        id: user.id,
+        userName,
+        id: userName,
         response: getSuccessResponse(),
       };
     } else {

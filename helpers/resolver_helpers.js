@@ -39,7 +39,8 @@ exports.isMember = ({ role = 'NO_ROLE' } = {}) => privileges[role] > 0;
 
 exports.isEditor = ({ role = 'NO_ROLE' } = {}) => privileges[role] > 1;
 
-exports.isAdmin = ({ role = 'NO_ROLE' } = {}) => privileges[role] > 2;
+exports.isAdmin = (role = 'NO_ROLE') =>
+  console.log('ROLE IS', role) || privileges[role] > 2;
 
 exports.getErrorResponse = (
   message = 'Uh oh, there was a problem',

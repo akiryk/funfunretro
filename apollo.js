@@ -29,30 +29,21 @@ const getUser = (req) => {
     .then((data) => {
       return {
         ...data.docs[0].data(),
-        id: data.docs[0].id,
+        userName: data.docs[0].id,
       };
     })
     .catch((err) => {
       console.error('Error while verifying token ', err);
-      return;
+      return null;
     });
 };
 
 exports.server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    try {
-      const user = await getUser(req);
-      if (!user) {
-        return null;
-      }
-      // add the user to the context
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  context: async ({ req }) => ({
+    user: await getUser(req),
+  }),
   introspection: true,
   playground: true,
 });

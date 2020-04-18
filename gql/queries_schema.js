@@ -33,6 +33,8 @@ exports.Queries = gql`
     "The userName is the user id"
     userNames: [String]
     users: [User]
+    "The max number of likes a user can add to the board"
+    maxLikes: Int
     response: QueryResponse
   }
   type Column {
@@ -55,13 +57,14 @@ exports.Queries = gql`
     response: QueryResponse
   }
   type User {
-    "For userName, use the user id"
+    "User id is their userName"
+    id: ID!
+    "The userName and user id are the same by design"
+    userName: String!
     email: String
     boardIds: [String]
     boards: [Board]
     comments: [Comment]
-    "User id is their userName"
-    id: ID!
     "userAuthId is the user UID from Authenticated Users table"
     uid: String!
     """
