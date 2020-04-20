@@ -4,7 +4,7 @@
  * Get and Change Boards
  *
  */
-const { db, admin } = require('./utils/firebase');
+const { db, admin } = require('./utils/app_config');
 const {
   getErrorResponse,
   getSuccessResponse,
@@ -109,7 +109,6 @@ exports.createBoard = async (newBoardData) => {
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
   } catch (error) {
-    console.log(error);
     return getErrorResponse('Unable to create a new board');
   }
   return {
