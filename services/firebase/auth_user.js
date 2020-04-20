@@ -1,7 +1,7 @@
 /**
  * Auth User Mutations
  */
-const { db, admin, firebase } = require('./utils/firebase');
+const { db, admin, firebase } = require('./utils/app_config');
 const { MEMBER_ROLE } = require('./utils/auth_helpers');
 const { createUser } = require('./user');
 

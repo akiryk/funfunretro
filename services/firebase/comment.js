@@ -1,7 +1,7 @@
 /**
  * Firebase Comment Service
  */
-const { admin, db } = require('./utils/firebase');
+const { admin, db } = require('./utils/app_config');
 const { isMember, isAdmin } = require('./utils/auth_helpers');
 const {
   getErrorResponse,

@@ -1,7 +1,7 @@
 /**
  * Firestore User Service
  */
-const { db, admin } = require('./utils/firebase');
+const { db, admin } = require('./utils/app_config');
 const { isMember, isAdmin } = require('./utils/auth_helpers');
 const {
   getCollection,

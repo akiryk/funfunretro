@@ -46,7 +46,7 @@ exports.getBoardData = (board) => {
 /**
  * Helper functions for queries and mutations
  */
-const { db } = require('./firebase');
+const { db } = require('./app_config');
 
 /**
  * Get a collection of items from db

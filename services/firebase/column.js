@@ -3,8 +3,7 @@
  *
  * Get and change columns
  */
-const { db, admin } = require('./utils/firebase');
-const { isAdmin } = require('./utils/auth_helpers');
+const { db, admin } = require('./utils/app_config');
 const {
   getCollection,
   getByIdFromCollection,

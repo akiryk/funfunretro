@@ -1,7 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs } = require('../gql/schema');
 const resolvers = require('../gql/resolvers');
-const { admin, db } = require('../firebase/utils/firebase');
+const { admin, db } = require('../firebase/utils/app_config');
 
 const getUser = (req) => {
   let idToken;
@@ -13,9 +13,7 @@ const getUser = (req) => {
     idToken = req.headers.authorization.split('Bearer ')[1];
   } else {
     console.log('No token found');
-    return {
-      role: 'NON_USER',
-    };
+    return;
   }
   return admin
     .auth()

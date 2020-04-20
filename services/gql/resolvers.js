@@ -236,8 +236,8 @@ module.exports = {
     comments: async ({ id }) => getCommentsByColumnId(id),
   },
   Comment: {
-    user: async ({ userName }) => {
-      return getUserById(userName);
+    user: async ({ createdBy }) => {
+      return getUserById(createdBy);
     },
   },
   User: {
