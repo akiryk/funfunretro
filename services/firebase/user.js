@@ -1,8 +1,8 @@
+const DataLoader = require('dataloader');
 /**
  * Firestore User Service
  */
 const { db, admin } = require('./utils/app_config');
-const { isMember, isAdmin } = require('./utils/auth_helpers');
 const {
   getCollection,
   getByIdFromCollection,
@@ -45,7 +45,10 @@ exports.getUsers = async () => {
  */
 exports.getUserById = async (userName) => {
   try {
-    const doc = await getDocFromCollection(userName, 'users');
+    const doc = await db
+      .collection('users')
+      .where('userName', '==', userName)
+      .get();
     if (doc.exists) {
       return {
         ...doc.data(),
@@ -60,6 +63,26 @@ exports.getUserById = async (userName) => {
     console.log(error);
   }
 };
+
+const getUsersByIds = async (userNames) => {
+  try {
+    const doc = await db.collection('users').where();
+    if (doc.exists) {
+      return {
+        ...doc.data(),
+        id: doc.id,
+        userName: doc.id, // userName === user.id
+        response: getSuccessResponse(),
+      };
+    } else {
+      return errorMsg;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.usersDataLoader = () => new DataLoader(getUsersByIds);
 
 /**
  * A board has anywhere from 0 to many users
