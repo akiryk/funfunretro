@@ -3,3 +3,5 @@
 utils/config.js
 utils/firebase.js
 utils/serviceAccountKey.json
+
+firebase-debug.log
