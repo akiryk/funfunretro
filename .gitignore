@@ -1,7 +1,6 @@
 /node_modules
 
-utils/config.js
-utils/firebase.js
-utils/serviceAccountKey.json
-
+**/app_config.js
+**/serviceAccountKey.json
+**/*.log
 firebase-debug.log
