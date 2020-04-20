@@ -50,8 +50,8 @@ exports.Queries = gql`
     text: String
     boardId: String
     createdAt: String
-    "The userName is the user id"
-    userName: String
+    "createdBy is the userName of the comment author"
+    createdBy: String
     user: User
     likes: Int
     response: QueryResponse

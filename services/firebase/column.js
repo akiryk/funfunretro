@@ -1,34 +1,86 @@
 /**
- * Column Mutations
+ * Firestore Column Service
+ *
+ * Get and change columns
  */
-const { db, admin } = require('../../utils/firebase');
-const { isEditor, isAdmin } = require('../../helpers/resolver_helpers');
-// Editor role only
-exports.createColumn = async (_, { input: args }) => {
-  if (!isEditor(user)) {
+const { db, admin } = require('./utils/firebase');
+const { isAdmin } = require('./utils/auth_helpers');
+const {
+  getCollection,
+  getByIdFromCollection,
+  getFromCollectionWhere,
+} = require('./utils/firestore_helpers');
+
+exports.getColumns = async () => {
+  try {
+    const columns = await getCollection('columns');
+    return columns.docs.map((column) => {
+      return {
+        ...column.data(),
+        id: column.id,
+      };
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getColumnById_ = async (id) => {
+  try {
+    const column = await getByIdFromCollection(id, 'columns');
     return {
-      message: 'you must have admin role to create a column',
-      code: '400',
-      success: false,
+      ...column.data(),
+      id,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getColumnsByBoardId = async (boardId) => {
+  try {
+    const boardColumns = await getFromCollectionWhere({
+      collection: 'columns',
+      targetProp: 'boardId',
+      matches: '==',
+      sourceProp: boardId,
+    });
+    return boardColumns.docs.map((column) => {
+      return {
+        ...column.data(),
+        id: column.id,
+      };
+    });
+  } catch (error) {
+    return {
+      id: '',
+      response: {
+        message: error,
+        code: '500',
+        success: false,
+      },
     };
   }
+};
+
+exports.createColumn = async (input) => {
+  const { name, boardId } = input;
   try {
     const newColumn = await admin.firestore().collection('columns').add({
-      name: args.name,
-      boardId: args.boardId,
+      name: name,
+      boardId: boardId,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     return {
       code: '200',
       success: true,
-      message: `Successfully created a new column, ${args.name}`,
+      message: `Successfully created a new column, ${name}`,
       column: {
-        name: args.name,
+        name: name,
         id: newColumn.id,
       },
     };
   } catch (error) {
-    console.log(error);
     return {
       code: '400',
       success: false,
@@ -38,16 +90,9 @@ exports.createColumn = async (_, { input: args }) => {
 };
 
 // Editor role only
-exports.updateColumn = async (_, { input: args }, user) => {
-  if (!isEditor(user)) {
-    // only logged in users can see a board
-    return {
-      message: 'you must have admin role to update a column',
-      code: '400',
-      success: false,
-    };
-  }
-  const columnId = args.id;
+exports.updateColumn = async (input) => {
+  const { id: columnId, name } = input;
+  console.log('Got the id', input);
   try {
     const columnToUpdate = db.collection('columns').doc(columnId);
     const doc = await columnToUpdate.get();
@@ -58,8 +103,8 @@ exports.updateColumn = async (_, { input: args }, user) => {
         message: `Column with id ${columnId} does not exist`,
       };
     }
-    const name = args.name.trim();
-    if (name === '') {
+    const trimmedName = name.trim();
+    if (trimmedName === '') {
       return {
         code: '400',
         success: false,
@@ -69,10 +114,10 @@ exports.updateColumn = async (_, { input: args }, user) => {
     const oldDoc = doc.data();
     const newDoc = {
       ...oldDoc,
-      name,
+      trimmedName,
       id: doc.id,
     };
-    await columnToUpdate.update({ name });
+    await columnToUpdate.update({ trimmedName });
     return {
       code: '200',
       success: true,
@@ -82,7 +127,6 @@ exports.updateColumn = async (_, { input: args }, user) => {
       },
     };
   } catch (error) {
-    console.log(error);
     return {
       code: '400',
       success: false,
@@ -91,33 +135,23 @@ exports.updateColumn = async (_, { input: args }, user) => {
   }
 };
 
-// Admin role only
-exports.deleteColumn = async (_, { input: args }, user) => {
-  if (!isAdmin(user)) {
-    return {
-      message: 'You need admin privileges for that action',
-      code: '400',
-      success: false,
-    };
-  }
-  if (!args || !args.id) {
-    return {
-      message: "It looks like you didn't provide a column id",
-      code: '400',
-      success: false,
-    };
-  }
-
-  // Find and delete the column
-  const columnId = args.id;
-  const columnToDelete = db.doc(`/columns/${columnId}`);
+/**
+ * Delete a column
+ * TODO: make this work. As of now it is only possible to hide a column
+ *
+ * - delete the column
+ * - delete all comments on the column
+ * - recalibrate likes for anyone who liked one of those comments
+ */
+exports.deleteColumn = async (id) => {
+  const columnToDelete = db.doc(`/columns/${id}`);
   try {
     const columnDoc = await columnToDelete.get();
     if (!columnDoc.exists) {
       return {
         code: '400',
         success: false,
-        message: `column with id ${columnId} does not exist`,
+        message: `column with id ${id} does not exist`,
       };
     }
     await columnToDelete.delete();
@@ -126,7 +160,7 @@ exports.deleteColumn = async (_, { input: args }, user) => {
     const columnComments = await admin
       .firestore()
       .collection('comments')
-      .where('columnId', '==', columnId)
+      .where('columnId', '==', id)
       .get();
     let deletedCommentCount = 0;
     columnComments.forEach(async (comment) => {
@@ -140,7 +174,6 @@ exports.deleteColumn = async (_, { input: args }, user) => {
       message: `Column ${columnId} deleted successfully along with its ${deletedCommentCount} comments`,
     };
   } catch (error) {
-    console.log(error);
     return {
       code: '400',
       success: false,

@@ -1,14 +1,11 @@
 /**
  * Auth User Mutations
  */
-const { db, admin, firebase } = require('../../utils/firebase');
-const { MEMBER_ROLE } = require('../../constants');
-const { createUser } = require('./user_mutation_resolvers');
+const { db, admin, firebase } = require('./utils/firebase');
+const { MEMBER_ROLE } = require('./utils/auth_helpers');
+const { createUser } = require('./user');
 
-const {
-  validateSignupData,
-  validateLoginData,
-} = require('../../utils/validators');
+const { validateSignupData, validateLoginData } = require('./utils/validators');
 
 exports.signup = async (_, { input: args }) => {
   const { email, userName, password } = args;

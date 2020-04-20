@@ -5,8 +5,8 @@
 
 const functions = require('firebase-functions');
 const express = require('express');
-const { server } = require('./apollo');
-const { db, admin } = require('./utils/firebase');
+const { server } = require('./services/apollo/apollo');
+// const { db, admin } = require('./services/firebase/utils/firebase');
 // const FbAuth = require('./utils/fb_auth');
 
 const app = express();
@@ -41,7 +41,7 @@ exports.api = functions.region('us-east1').https.onRequest(app);
 //     // only update likes if they've changed
 //     if (n !== 0) {
 //       console.log('should update board!');
-//       return db.doc(`boards/${boardId}`).set(
+// return db.doc(`boards/${boardId}`).set(
 //         {
 //           likesByUser: {
 //             [userName]: admin.firestore.FieldValue.increment(n),

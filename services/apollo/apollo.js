@@ -1,7 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
-const { typeDefs } = require('./gql/schema');
-const resolvers = require('./gql/resolvers');
-const { admin, db } = require('./utils/firebase');
+const { typeDefs } = require('../gql/schema');
+const resolvers = require('../gql/resolvers');
+const { admin, db } = require('../firebase/utils/firebase');
 
 const getUser = (req) => {
   let idToken;
@@ -12,8 +12,10 @@ const getUser = (req) => {
   ) {
     idToken = req.headers.authorization.split('Bearer ')[1];
   } else {
-    console.error('No token found');
-    return;
+    console.log('No token found');
+    return {
+      role: 'NON_USER',
+    };
   }
   return admin
     .auth()
@@ -33,8 +35,8 @@ const getUser = (req) => {
       };
     })
     .catch((err) => {
-      console.error('Error while verifying token ', err);
-      return null;
+      console.log('Error while verifying token; probably expired');
+      return; // return null because there's no user
     });
 };
 

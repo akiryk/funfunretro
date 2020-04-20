@@ -19,7 +19,6 @@ exports.Mutations = gql`
   input CreateCommentInput {
     boardId: String!
     columnId: String!
-    userName: String!
     text: String!
   }
 
@@ -40,8 +39,13 @@ exports.Mutations = gql`
     password: String!
   }
 
+  input DeleteBoardInput {
+    id: String!
+  }
+
   input DeleteColumnInput {
     id: String!
+    boardId: String!
   }
 
   input DeleteCommentInput {
@@ -62,6 +66,7 @@ exports.Mutations = gql`
 
   input UpdateColumnInput {
     id: String!
+    boardId: String!
     name: String!
   }
 
@@ -155,19 +160,7 @@ exports.Mutations = gql`
     token: String
   }
 
-  type DeleteColumnResponse implements MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-  }
-
-  type DeleteCommentResponse implements MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-  }
-
-  type DeleteUserResponse implements MutationResponse {
+  type DeleteItemResponse implements MutationResponse {
     code: String!
     success: Boolean!
     message: String!
@@ -197,8 +190,7 @@ exports.Mutations = gql`
     updateComment(input: UpdateCommentInput): UpdateCommentResponse!
     likeComment(input: LikeCommentInput): LikeCommentResponse!
     unlikeComment(input: LikeCommentInput): LikeCommentResponse!
-    deleteColumn(input: DeleteColumnInput): DeleteColumnResponse!
-    deleteComment(input: DeleteCommentInput): DeleteCommentResponse!
-    deleteUser(input: DeleteUserInput): DeleteUserResponse!
+    deleteComment(input: DeleteCommentInput): DeleteItemResponse!
+    deleteUser(input: DeleteUserInput): DeleteItemResponse!
   }
 `;

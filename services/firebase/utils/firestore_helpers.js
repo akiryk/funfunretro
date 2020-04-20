@@ -1,7 +1,52 @@
+// TODO: remove this
+exports.getErrorResponse = (
+  message = 'Uh oh, there was a problem',
+  code = '400'
+) => ({
+  message,
+  code,
+  success: false,
+});
+
+exports.getMutationErrorResponse = (
+  message = 'Uh oh, there was a problem',
+  code = '400'
+) => ({
+  message,
+  code,
+  success: false,
+});
+
+exports.getSuccessResponse = (message = 'Yes, it worked') => ({
+  message,
+  code: '200',
+  success: true,
+});
+
+exports.getQueryErrorResponse = ({ props = {}, message, code }) => {
+  return {
+    ...props,
+    response: this.getErrorResponse(message, code),
+  };
+};
+
+/**
+ * Return board data from a board query snapshot
+ *
+ * @param {object} board - the board querySnapshot
+ * @returns {object} the board data in shape required by schema
+ */
+exports.getBoardData = (board) => {
+  return {
+    ...board.data(),
+    id: board.id,
+  };
+};
+
 /**
  * Helper functions for queries and mutations
  */
-const { db } = require('../utils/firebase');
+const { db } = require('./firebase');
 
 /**
  * Get a collection of items from db
