@@ -133,9 +133,10 @@ module.exports = {
             }),
           ];
     },
-    user: (_, { id }, { user }) => {
+    user: (_, { id }, { user, loaders }) => {
+      const { usersLoader } = loaders;
       return isUserAdmin(user)
-        ? getUserById(id)
+        ? usersLoader.load(id)
         : getQueryErrorResponse({
             props: { id: '', uid: '' },
             message: 'you must be logged in to get user information',
@@ -226,8 +227,11 @@ module.exports = {
     userNames: ({ userNames }) => userNames,
     maxLikes: ({ maxLikes }) => maxLikes,
     // These are necessary
-    users: async ({ id }) => {
-      return await getUsersByBoardId(id);
+    users: async (root, _, { loaders }) => {
+      const { userNames } = root;
+      const { usersLoader } = loaders;
+      return await usersLoader.load(userNames);
+      // return await getUsersByBoardId(id);
     },
     columns: async ({ id }) => getColumnsByBoardId(id),
     comments: async ({ id }) => getCommentsByBoardId(id),
@@ -242,7 +246,6 @@ module.exports = {
   },
   User: {
     id: (root) => root.id,
-    userName: (root) => root.id, // the userName is the id
     boards: async ({ id }) => getBoardsByUserName(id),
     comments: async ({ id }) => getCommentsByUserId(id),
   },

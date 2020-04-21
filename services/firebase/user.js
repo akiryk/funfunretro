@@ -14,11 +14,7 @@ const {
 } = require('./utils/firestore_helpers');
 
 const errorMsg = {
-  response: {
-    message: 'you must be logged in to view user level data',
-    code: '400',
-    success: false,
-  },
+  response: getErrorResponse(),
   id: '',
   uid: '',
 };
@@ -34,7 +30,7 @@ exports.getUsers = async () => {
       };
     });
   } catch (error) {
-    console.log(error);
+    return errorMsg;
   }
 };
 
@@ -45,10 +41,7 @@ exports.getUsers = async () => {
  */
 exports.getUserById = async (userName) => {
   try {
-    const doc = await db
-      .collection('users')
-      .where('userName', '==', userName)
-      .get();
+    const doc = await getDocFromCollection(userName, 'users');
     if (doc.exists) {
       return {
         ...doc.data(),
@@ -60,26 +53,28 @@ exports.getUserById = async (userName) => {
       return errorMsg;
     }
   } catch (error) {
-    console.log(error);
+    return errorMsg;
   }
 };
 
-const getUsersByIds = async (userNames) => {
-  try {
-    const doc = await db.collection('users').where();
-    if (doc.exists) {
-      return {
-        ...doc.data(),
-        id: doc.id,
-        userName: doc.id, // userName === user.id
-        response: getSuccessResponse(),
-      };
-    } else {
-      return errorMsg;
-    }
-  } catch (error) {
-    console.log(error);
-  }
+const getUsersByIds = (userNames) => {
+  console.log('userNames.length', userNames.length);
+  let userRefs = userNames[0].map((id) => {
+    console.log('id is ', id);
+    return db.collection('users').doc(id).get();
+  });
+
+  return Promise.all(userRefs)
+    .then((docs) => {
+      let users = docs.map((user) => ({
+        ...user.data(),
+        // must include id/userName since that won't be on root since root was a board
+        id: user.id,
+      }));
+      console.log('USERS ARRAY', users.length);
+      return users;
+    })
+    .catch((error) => console.log(error));
 };
 
 exports.usersDataLoader = () => new DataLoader(getUsersByIds);
@@ -104,7 +99,6 @@ exports.getUsersByBoardId = async (boardId) => {
         ...user.data(),
         // must include id/userName since that won't be on root since root was a board
         id: user.id,
-        userName: user.id,
       };
     });
   } catch (error) {

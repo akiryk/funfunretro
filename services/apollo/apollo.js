@@ -2,6 +2,10 @@ const { ApolloServer } = require('apollo-server-express');
 const { typeDefs } = require('../gql/schema');
 const resolvers = require('../gql/resolvers');
 const { admin, db } = require('../firebase/utils/app_config');
+const {
+  usersDataLoader,
+  usersByBoardsDataLoader,
+} = require('../firebase/user');
 
 const getUser = (req) => {
   let idToken;
@@ -43,6 +47,9 @@ exports.server = new ApolloServer({
   resolvers,
   context: async ({ req }) => ({
     user: await getUser(req),
+    loaders: {
+      usersLoader: usersDataLoader(),
+    },
   }),
   introspection: true,
   playground: true,
