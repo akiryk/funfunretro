@@ -3,11 +3,11 @@ const { typeDefs } = require('../gql/schema');
 const resolvers = require('../gql/resolvers');
 const { admin, db } = require('../firebase/utils/app_config');
 const {
-  usersDataLoader,
-  usersByBoardsDataLoader,
+  usersByBoardIdsDataLoader,
+  usersByUserIdDataLoader,
 } = require('../firebase/user');
 
-const getUser = (req) => {
+const getUser = async (req) => {
   let idToken;
   if (
     req.headers &&
@@ -17,29 +17,40 @@ const getUser = (req) => {
     idToken = req.headers.authorization.split('Bearer ')[1];
   } else {
     console.log('No token found');
-    return;
+    return {
+      isMember: false,
+    };
   }
-  return admin
-    .auth()
-    .verifyIdToken(idToken)
-    .then((decodedToken) => {
-      req.user = decodedToken;
-      return db
-        .collection('users')
-        .where('uid', '==', req.user.uid)
-        .limit(1)
-        .get();
-    })
-    .then((data) => {
-      return {
-        ...data.docs[0].data(),
-        userName: data.docs[0].id,
-      };
-    })
-    .catch((err) => {
-      console.log('Error while verifying token; probably expired');
-      return; // return null because there's no user
-    });
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { uid, email } = decodedToken;
+
+    // get the user record with additional data about roles and username
+    const userRecord = await admin.auth().getUser(uid);
+    const userName = userRecord.displayName;
+    const role = userRecord.customClaims['role'];
+
+    const user = {
+      uid,
+      role,
+      userName,
+      email,
+    };
+    // if (req.user.admin) {
+    //   user.role = 'ADMIN';
+    // }
+    // if (req.user.editor) {
+    //   user.role = 'EDITOR';
+    // }
+    console.log('USER IS:', user);
+    return user;
+  } catch (err) {
+    console.log('Error while verifying token; probably expired');
+    return {
+      isMember: false,
+    };
+  }
 };
 
 exports.server = new ApolloServer({
@@ -48,7 +59,8 @@ exports.server = new ApolloServer({
   context: async ({ req }) => ({
     user: await getUser(req),
     loaders: {
-      usersLoader: usersDataLoader(),
+      usersByBoardIdLoader: usersByBoardIdsDataLoader(),
+      usersByUserIdLoader: usersByUserIdDataLoader(),
     },
   }),
   introspection: true,

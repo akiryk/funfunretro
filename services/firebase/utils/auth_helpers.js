@@ -5,6 +5,7 @@
 exports.MEMBER_ROLE = 'MEMBER';
 exports.ADMIN_ROLE = 'ADMIN';
 exports.EDITOR_ROLE = 'EDITOR';
+exports.ROLES = [this.MEMBER_ROLE, this.ADMIN_ROLE, this.EDITOR_ROLE];
 
 const privileges = {
   NO_ROLE: 0,
@@ -19,8 +20,7 @@ exports.isEditor = (role = 'NO_ROLE') => privileges[role] > 1;
 
 exports.isAdmin = (role = 'NO_ROLE') => privileges[role] > 2;
 
-exports.isUserMember = (user = {}) =>
-  user && user.role && this.isMember(user.role);
+exports.isUserMember = (user) => user && user.role && this.isMember(user.role);
 
 exports.isUserEditor = (user = {}) =>
   user && user.role && this.isEditor(user.role);

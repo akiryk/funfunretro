@@ -2,19 +2,16 @@
  * Auth User Mutations
  */
 const { db, admin, firebase } = require('./utils/app_config');
-const { MEMBER_ROLE } = require('./utils/auth_helpers');
-const { createUser } = require('./user');
+const { MEMBER_ROLE, ROLES } = require('./utils/auth_helpers');
 
 const { validateSignupData, validateLoginData } = require('./utils/validators');
 
-exports.signup = async (_, { input: args }) => {
-  const { email, userName, password } = args;
-  const newUser = {
+exports.signup = async ({ email, userName, password }) => {
+  const { isValid } = validateSignupData({
     email,
     userName,
     password,
-  };
-  const { isValid } = validateSignupData(newUser);
+  });
   if (!isValid) {
     return {
       code: '400',
@@ -25,8 +22,8 @@ exports.signup = async (_, { input: args }) => {
 
   try {
     // Async await for user info
-    const doc = await db.doc(`users/${newUser.userName}`).get();
-
+    // const doc = await db.collection('users').doc('userName', '==', userName);
+    const doc = await db.doc(`users/${userName}`).get();
     if (doc.exists) {
       return {
         code: '400',
@@ -37,24 +34,32 @@ exports.signup = async (_, { input: args }) => {
     // Async await for admin to create authenticated user
     const newAuthUser = await firebase
       .auth()
-      .createUserWithEmailAndPassword(newUser.email, newUser.password);
+      .createUserWithEmailAndPassword(email, password);
 
     // Async await for the new user's token
     const token = await newAuthUser.user.getIdToken();
     const uid = newAuthUser.user.uid;
-    const userCredentials = {
-      userName: newUser.userName,
-      email: newUser.email,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+
+    await newAuthUser.user.updateProfile({
+      displayName: userName,
+      email,
       uid,
-      role: MEMBER_ROLE,
-      boardIds: [],
-    };
-    await createUser(null, {
-      input: userCredentials,
     });
+
+    await admin.auth().setCustomUserClaims(uid, {
+      role: 'MEMBER',
+    });
+
+    const userCredentials = {
+      userName,
+      email,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      boardIds: [],
+      role: 'MEMBER',
+    };
+
     // Async await for admin to create a new user profile
-    // await db.doc(`/users/${newUser.userName}`).set(userCredentials);
+    await db.doc(`/users/${userName}`).set(userCredentials);
 
     return {
       code: '201',
@@ -83,9 +88,7 @@ exports.signup = async (_, { input: args }) => {
   }
 };
 
-exports.login = async (_, { input: args }) => {
-  const { email, password } = args;
-
+exports.login = async (email, password) => {
   const { isValid } = validateLoginData({ email, password });
   if (!isValid) {
     return {
@@ -94,37 +97,73 @@ exports.login = async (_, { input: args }) => {
       message: 'Missing valid login name or password',
     };
   }
+
   try {
     const data = await firebase
       .auth()
       .signInWithEmailAndPassword(email, password);
 
     const token = await data.user.getIdToken();
+    const userName = data.user.displayName;
 
-    const userProfile = await admin
-      .firestore()
-      .collection('users')
-      .where('uid', '==', data.user.uid)
-      .get();
+    // get user record so we can access custom claims for role
+    const userRecord = await admin.auth().getUser(data.user.uid);
+    const role = userRecord.customClaims['role'];
 
-    const { boardIds, role, userName } = userProfile.docs[0].data();
     return {
-      boardIds,
-      email,
-      userName,
+      id: userName,
       role,
+      userName,
+      email,
       token,
-      uid: data.user.uid,
       code: '200',
       success: true,
       message: 'Logged in!',
     };
   } catch (error) {
-    console.log(error);
+    return {
+      code: '500',
+      success: false,
+      message: error,
+    };
+  }
+};
+
+exports.addRole = async ({ email, role }) => {
+  // role must be EDITOR, MEMBER, or ADMIN
+  if (!ROLES.includes(role)) {
     return {
       code: '400',
       success: false,
-      message: 'Unable to log in',
+      message: `${role} is not a designated role`,
+    };
+  }
+
+  let user;
+  try {
+    user = await admin.auth().getUserByEmail(email);
+  } catch (error) {
+    return {
+      code: '400',
+      success: false,
+      message: `No user corresponds with ${email}`,
+    };
+  }
+
+  try {
+    await admin.auth().setCustomUserClaims(user.uid, {
+      [role]: true,
+    });
+    return {
+      code: '200',
+      success: true,
+      message: `${email} is now ${role.toLowerCase()}`,
+    };
+  } catch (error) {
+    return {
+      code: '500',
+      success: false,
+      message: error,
     };
   }
 };

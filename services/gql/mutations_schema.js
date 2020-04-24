@@ -22,12 +22,6 @@ exports.Mutations = gql`
     text: String!
   }
 
-  input CreateUserInput {
-    userName: String!
-    boardIds: [String]
-    email: String
-  }
-
   input SignupInput {
     userName: String!
     email: String!
@@ -37,6 +31,11 @@ exports.Mutations = gql`
   input LoginInput {
     email: String!
     password: String!
+  }
+
+  input AddRoleInput {
+    email: String!
+    role: String!
   }
 
   input DeleteBoardInput {
@@ -141,13 +140,6 @@ exports.Mutations = gql`
     comment: Comment
   }
 
-  type CreateUserResponse implements MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-    user: User
-  }
-
   """
   Authenticated users are created with the Firebase SDK.
   """
@@ -171,20 +163,22 @@ exports.Mutations = gql`
     success: Boolean!
     message: String!
     token: String
-    userName: String
-    uid: String
-    email: String
-    boardIds: [String]
-    role: Role
+    user: User
+  }
+
+  type AddRoleResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
   }
 
   type Mutation {
     createBoard(input: CreateBoardInput): CreateBoardResponse!
     createColumn(input: CreateColumnInput): CreateColumnResponse!
     createComment(input: CreateCommentInput): CreateCommentResponse!
-    createUser(input: CreateUserInput): CreateUserResponse!
     signup(input: SignupInput): SignupResponse!
     login(input: LoginInput): LoginResponse!
+    addRole(input: AddRoleInput): AddRoleResponse!
     updateBoard(input: UpdateBoardInput): UpdateBoardResponse!
     updateColumn(input: UpdateColumnInput): UpdateColumnResponse!
     updateComment(input: UpdateCommentInput): UpdateCommentResponse!

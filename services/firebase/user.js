@@ -26,7 +26,6 @@ exports.getUsers = async () => {
       return {
         ...user.data(),
         id: user.id,
-        userName: user.id, // userName == user.id
       };
     });
   } catch (error) {
@@ -39,14 +38,13 @@ exports.getUsers = async () => {
  *
  * @param {string} userName - the user.id
  */
-exports.getUserById = async (userName) => {
+exports.getUserById = async (id) => {
   try {
-    const doc = await getDocFromCollection(userName, 'users');
+    const doc = await getDocFromCollection(id, 'users');
     if (doc.exists) {
       return {
         ...doc.data(),
         id: doc.id,
-        userName: doc.id, // userName === user.id
         response: getSuccessResponse(),
       };
     } else {
@@ -57,29 +55,44 @@ exports.getUserById = async (userName) => {
   }
 };
 
-const getUsersByIds = (userNames) => {
-  console.log('userNames.length', userNames.length);
-  let userRefs = userNames[0].map((id) => {
-    console.log('id is ', id);
-    return db.collection('users').doc(id).get();
-  });
-
-  return Promise.all(userRefs)
-    .then((docs) => {
-      let users = docs.map((user) => ({
-        ...user.data(),
-        // must include id/userName since that won't be on root since root was a board
-        id: user.id,
-      }));
-      console.log('USERS ARRAY', users.length);
-      return users;
-    })
-    .catch((error) => console.log(error));
+const getUsersByUserIds = async (userNames) => {
+  console.log('======Get Users By User IDs======');
+  const data = await Promise.all(
+    userNames.map(
+      async (userName) => await db.collection('users').doc(userName).get()
+    )
+  );
+  return data.map((user) => ({
+    ...user.data(),
+    id: user.id,
+  }));
 };
 
-exports.usersDataLoader = () => new DataLoader(getUsersByIds);
+exports.usersByUserIdDataLoader = () => new DataLoader(getUsersByUserIds);
+
+const getUsersByBoardIds = async (boardIds) => {
+  console.log('======Get Users By Board IDs======');
+  const data = await Promise.all(
+    boardIds.map(
+      async (boardId) =>
+        await db
+          .collection('users')
+          .where('boardIds', 'array-contains', boardId)
+          .get()
+    )
+  );
+  return data.map((users) =>
+    users.docs.map((user) => ({
+      ...user.data(),
+      id: user.id,
+    }))
+  );
+};
+
+exports.usersByBoardIdsDataLoader = () => new DataLoader(getUsersByBoardIds);
 
 /**
+ * TODO: Remove this, it's not used once data loaders are all set up.
  * A board has anywhere from 0 to many users
  * This returns those users
  *
@@ -87,6 +100,7 @@ exports.usersDataLoader = () => new DataLoader(getUsersByIds);
  * @return {object} either the User or an error response
  */
 exports.getUsersByBoardId = async (boardId) => {
+  console.log('_____Get Users By Board ID______');
   try {
     const boardUsers = await getFromCollectionWhere({
       collection: 'users',
@@ -94,6 +108,7 @@ exports.getUsersByBoardId = async (boardId) => {
       matches: 'array-contains',
       sourceProp: boardId,
     });
+    console.log(`Get users for ${boardId}`);
     return boardUsers.docs.map((user) => {
       return {
         ...user.data(),
@@ -114,10 +129,17 @@ exports.getUsersByBoardId = async (boardId) => {
   }
 };
 
-exports.createUser = async (_, { input: args, uid }) => {
-  let userName = args.userName.replace(/\s+/g, '');
+exports.createUser = async ({
+  userName,
+  uid,
+  role = MEMBER_ROLE,
+  email = '',
+  boardIds = [],
+}) => {
+  console.log('let us careate', userName, uid);
+  let cleanUserName = userName.replace(/\s+/g, '');
   try {
-    const user = await getByIdFromCollection(userName, 'users');
+    const user = await db.collection('users').doc(uid).get();
     if (user.exists) {
       return {
         code: '400',
@@ -125,33 +147,31 @@ exports.createUser = async (_, { input: args, uid }) => {
         message: `oooh, that userName is already taken`,
       };
     }
-    const roles = args.roles || [MEMBER_ROLE];
-    const email = args.email || '';
-    const boardIds = args.boardIds || [];
-    const uid = args.uid || '';
-    await admin.firestore().collection('users').doc(userName).set({
-      userName,
+    await admin.firestore().collection('users').doc(uid).set({
+      userName: cleanUserName,
       email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      uid,
-      roles,
+      role,
       boardIds,
     });
     return {
       code: '200',
       success: true,
-      message: `Successfully created new user, ${userName}`,
+      message: `Successfully created new user, ${cleanUserName}`,
       user: {
-        userName,
+        userName: cleanUserName,
         roles,
         email,
         boardIds,
-        id: userName,
+        id: uid,
       },
     };
   } catch (error) {
-    console.log(error);
-    return getErrorResponse('unable to create a user');
+    return {
+      code: '500',
+      success: false,
+      message: 'failed to create user for some server reason',
+    };
   }
 };
 

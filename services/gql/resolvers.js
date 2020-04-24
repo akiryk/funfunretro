@@ -31,6 +31,7 @@ const {
   getUsers,
   getUserById, // get user by userName (id === userName)
   getUsersByBoardId,
+  deleteUser,
 } = require('../firebase/user');
 
 const { createColumn, updateColumn } = require('../firebase/column');
@@ -41,8 +42,8 @@ const {
   likeComment,
   unlikeComment,
 } = require('../firebase/comment');
-const { createUser, deleteUser } = require('../firebase/user');
-const { signup, login } = require('../firebase/auth_user');
+
+const { signup, login, addRole } = require('../firebase/auth_user');
 
 /**
  * Is the user a member of the given board
@@ -79,7 +80,7 @@ module.exports = {
     },
     myBoards: async (_, __, { user }) => {
       return isUserMember(user)
-        ? getBoardsByUserName(user.userName)
+        ? getBoardsByUserId(user.uid)
         : [
             getQueryErrorResponse({
               props: { id: '' },
@@ -213,10 +214,19 @@ module.exports = {
             'you can only unlike comments on boards where you are a member'
           );
     },
-    createUser,
     deleteUser,
-    signup,
-    login,
+    signup: async (_, { input }) => signup(input),
+    login: async (_, { input }) => {
+      const { email, password } = input;
+      return login(email, password);
+    },
+    addRole: async (_, { input }, { user }) => {
+      // get the email of the user to me made an admin
+      const { email, role } = input;
+      return isUserAdmin(user)
+        ? addRole({ email, role })
+        : getMutationErrorResponse('only admins can make other users an admin');
+    },
   },
   Board: {
     // following are unnecessary, but included for clarity
@@ -227,21 +237,27 @@ module.exports = {
     userNames: ({ userNames }) => userNames,
     maxLikes: ({ maxLikes }) => maxLikes,
     // These are necessary
-    users: async (root, _, { loaders }) => {
-      const { userNames } = root;
-      const { usersLoader } = loaders;
-      return await usersLoader.load(userNames);
-      // return await getUsersByBoardId(id);
+    users: async ({ id }, _, { loaders }) => {
+      // return getUsersByBoardId(id);
+      const { usersByBoardIdLoader } = loaders;
+      return await usersByBoardIdLoader.load(id);
     },
     columns: async ({ id }) => getColumnsByBoardId(id),
-    comments: async ({ id }) => getCommentsByBoardId(id),
+    likesByUser: ({ likesByUser = [] }) =>
+      // return an array of arrays rather than of objects to align with schema
+      Object.keys(likesByUser).map((userName) => [
+        userName,
+        `${likesByUser[userName]}`,
+      ]),
   },
   Column: {
     comments: async ({ id }) => getCommentsByColumnId(id),
   },
   Comment: {
-    user: async ({ createdBy }) => {
-      return getUserById(createdBy);
+    user: async ({ createdBy }, _, { loaders }) => {
+      // return getUserById(createdBy);
+      const { usersByUserIdLoader } = loaders;
+      return await usersByUserIdLoader.load(createdBy);
     },
   },
   User: {

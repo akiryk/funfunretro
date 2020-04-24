@@ -58,13 +58,13 @@ exports.getBoardById = async (id) => {
 /*
  * Get boards for a given user
  */
-exports.getBoardsByUserName = async (userName) => {
+exports.getBoardsByUserId = async (id) => {
   try {
     const boards = await getFromCollectionWhere({
       collection: 'boards',
-      targetProp: 'userNames',
+      targetProp: 'userIds',
       matches: 'array-contains',
-      sourceProp: userName,
+      sourceProp: id,
     });
     return boards.docs.map((board) => {
       return {

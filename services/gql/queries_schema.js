@@ -29,12 +29,12 @@ exports.Queries = gql`
     id: ID!
     columnIds: [String]
     columns: [Column]
-    comments: [Comment]
     "The userName is the user id"
     userNames: [String]
     users: [User]
     "The max number of likes a user can add to the board"
     maxLikes: Int
+    likesByUser: [[String]]
     response: QueryResponse
   }
   type Column {
@@ -57,21 +57,15 @@ exports.Queries = gql`
     response: QueryResponse
   }
   type User {
-    "User id is their userName"
+    "User id is their uid"
     id: ID!
     "The userName and user id are the same by design"
     userName: String!
+    role: String!
     email: String
     boardIds: [String]
     boards: [Board]
     comments: [Comment]
-    "userAuthId is the user UID from Authenticated Users table"
-    uid: String!
-    """
-    There are three possible roles. From lowest privileges to highest, they are:
-    'member', 'editor', 'admin'
-    """
-    role: Role
     response: QueryResponse
   }
 
