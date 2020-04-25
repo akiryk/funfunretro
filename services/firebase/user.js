@@ -36,7 +36,6 @@ exports.getUsers = async () => {
  * @param {string} userName - the user.id
  */
 exports.getUserById = async (id) => {
-  console.log('get user by id', id);
   try {
     const doc = await db.collection('users').doc(id).get();
     if (doc.exists) {

@@ -34,6 +34,7 @@ const {
 const {
   createColumn,
   updateColumn,
+  deleteColumn,
 } = require('./mutations/column_mutation_resolvers');
 
 const {
@@ -74,6 +75,7 @@ module.exports = {
     updateBoard,
     createColumn,
     updateColumn,
+    deleteColumn,
     createComment,
     updateComment,
     deleteComment,

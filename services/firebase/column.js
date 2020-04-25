@@ -89,9 +89,7 @@ exports.createColumn = async (input) => {
 };
 
 // Editor role only
-exports.updateColumn = async (input) => {
-  const { id: columnId, name } = input;
-  console.log('Got the id', input);
+exports.updateColumn = async (columnId, name) => {
   try {
     const columnToUpdate = db.collection('columns').doc(columnId);
     const doc = await columnToUpdate.get();
@@ -113,10 +111,10 @@ exports.updateColumn = async (input) => {
     const oldDoc = doc.data();
     const newDoc = {
       ...oldDoc,
-      trimmedName,
+      name: trimmedName,
       id: doc.id,
     };
-    await columnToUpdate.update({ trimmedName });
+    await columnToUpdate.update({ name: trimmedName });
     return {
       code: '200',
       success: true,

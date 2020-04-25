@@ -4,7 +4,6 @@ const {
 } = require('../../firebase/utils/auth_helpers');
 
 const {
-  isUserMemberOfBoard,
   getQueryErrorResponse,
 } = require('../../firebase/utils/firestore_helpers');
 
@@ -13,6 +12,8 @@ const {
   getBoardById,
   getBoardsByUserId,
 } = require('../../firebase/board');
+
+const { getUserById } = require('../../firebase/user');
 
 const {
   getColumnsByBoardId, // the columns that belong to a particular board
@@ -29,16 +30,19 @@ const boards = async (_, __, { user }) => {
       ];
 };
 
-const board = async (_, { id }, { user }) => {
-  if (isUserMemberOfBoard(user, id) || isUserAdmin(user)) {
-    return getBoardById(id);
+const board = async (_, { id: boardId }, { user }) => {
+  if (isUserAdmin(user)) {
+    return getBoardById(boardId);
   }
-  return getQueryErrorResponse({
-    props: { id: '' },
-    message: !isUserMember(user)
-      ? 'you must be logged in'
-      : 'you can not request boards to which you do not belong',
-  });
+  const userProfile = await getUserById(user.userName);
+  return userProfile.boardIds.includes(boardId)
+    ? getBoardById(boardId)
+    : getQueryErrorResponse({
+        props: { id: '' },
+        message: !isUserMember(user)
+          ? 'you must be logged in'
+          : 'you can not request boards to which you do not belong',
+      });
 };
 
 const myBoards = async (_, __, { user }) => {

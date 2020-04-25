@@ -181,6 +181,7 @@ exports.Mutations = gql`
     addRole(input: AddRoleInput): AddRoleResponse!
     updateBoard(input: UpdateBoardInput): UpdateBoardResponse!
     updateColumn(input: UpdateColumnInput): UpdateColumnResponse!
+    deleteColumn(input: DeleteColumnInput): DeleteItemResponse!
     updateComment(input: UpdateCommentInput): UpdateCommentResponse!
     likeComment(input: LikeCommentInput): LikeCommentResponse!
     unlikeComment(input: LikeCommentInput): LikeCommentResponse!

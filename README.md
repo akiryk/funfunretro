@@ -186,3 +186,19 @@ To add headers to a query:
   "Authorization":"Bearer TOKENIDGOESHEREXXXXX"
 }
 ```
+
+### Firebase Triggers
+
+- Only work when deployed, not when in `firebase serve` local testing mode
+- Example below will listen for an `update` change to any document in the comments collection
+- Add `region` for faster update
+```
+exports.updateComment = functions.firestore
+  .document('comments/{commentId}')
+  .onUpdate((change, context) => {
+    console.log('before', change.before.data());
+    console.log('after', change.after.data());
+    console.log('context.params', context.params);
+    return change.after.data();
+  });
+```
