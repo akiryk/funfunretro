@@ -35,7 +35,7 @@ exports.Mutations = gql`
 
   input AddRoleInput {
     email: String!
-    role: String!
+    role: Role!
   }
 
   input DeleteBoardInput {

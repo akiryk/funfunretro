@@ -1,10 +1,56 @@
 /**
- * Auth User Mutations
+ * Auth User
+ *
+ * CRUD operations for Auth User in Firebase
+ *
  */
 const { db, admin, firebase } = require('./utils/app_config');
-const { MEMBER_ROLE, ROLES } = require('./utils/auth_helpers');
+const { ROLES } = require('./utils/auth_helpers');
 
 const { validateSignupData, validateLoginData } = require('./utils/validators');
+
+/**
+ * Verify that a user is authorized based on request header
+ */
+exports.getAuthUser = async (req) => {
+  let idToken;
+  if (
+    req.headers &&
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    idToken = req.headers.authorization.split('Bearer ')[1];
+  } else {
+    console.log('No token found');
+    return {
+      role: '',
+    };
+  }
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { uid, email } = decodedToken;
+
+    // get the user record with additional data about roles and username
+    const userRecord = await admin.auth().getUser(uid);
+    const userName = userRecord.displayName;
+    const role = userRecord.customClaims['role'];
+
+    const user = {
+      uid,
+      role,
+      userName,
+      email,
+    };
+
+    return user;
+  } catch (err) {
+    console.log('Error while verifying token; probably expired');
+    return {
+      role: '',
+    };
+  }
+};
 
 exports.signup = async ({ email, userName, password }) => {
   const { isValid } = validateSignupData({
@@ -55,7 +101,6 @@ exports.signup = async ({ email, userName, password }) => {
       email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       boardIds: [],
-      role: 'MEMBER',
     };
 
     // Async await for admin to create a new user profile
@@ -69,6 +114,7 @@ exports.signup = async ({ email, userName, password }) => {
       user: {
         ...userCredentials,
         id: userName,
+        role: 'MEMBER',
       },
     };
   } catch (error) {
@@ -105,16 +151,17 @@ exports.login = async (email, password) => {
 
     const token = await data.user.getIdToken();
     const userName = data.user.displayName;
-
     // get user record so we can access custom claims for role
     const userRecord = await admin.auth().getUser(data.user.uid);
     const role = userRecord.customClaims['role'];
 
     return {
-      id: userName,
-      role,
-      userName,
-      email,
+      user: {
+        id: userName,
+        role,
+        userName,
+        email,
+      },
       token,
       code: '200',
       success: true,
@@ -152,8 +199,22 @@ exports.addRole = async ({ email, role }) => {
 
   try {
     await admin.auth().setCustomUserClaims(user.uid, {
-      [role]: true,
+      role,
     });
+  } catch (error) {
+    return {
+      code: '500',
+      success: false,
+      message: error,
+    };
+  }
+
+  try {
+    // update the user's profile
+    await db.collection('users').doc(user.displayName).update({
+      role,
+    });
+
     return {
       code: '200',
       success: true,

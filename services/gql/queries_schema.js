@@ -60,8 +60,8 @@ exports.Queries = gql`
     "User id is their uid"
     id: ID!
     "The userName and user id are the same by design"
-    userName: String!
-    role: String!
+    userName: String
+    role: String
     email: String
     boardIds: [String]
     boards: [Board]

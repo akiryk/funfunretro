@@ -85,3 +85,13 @@ exports.getFromCollectionWhere = ({
 
 exports.getDocFromCollection = (doc, collection) =>
   db.collection(collection).doc(doc).get();
+
+/**
+ * Is the user a member of the given board
+ *
+ * @param {object} user
+ * @param {string} boardId
+ * @return {bool}
+ */
+exports.isUserMemberOfBoard = (user, boardId) =>
+  user && user.boardIds && user.boardIds.includes(boardId);

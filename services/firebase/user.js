@@ -5,11 +5,8 @@ const DataLoader = require('dataloader');
 const { db, admin } = require('./utils/app_config');
 const {
   getCollection,
-  getByIdFromCollection,
   getFromCollectionWhere,
-  getDocFromCollection,
   getErrorResponse,
-  getSuccessResponse,
   getGenericMutationResponseForError,
 } = require('./utils/firestore_helpers');
 
@@ -39,19 +36,16 @@ exports.getUsers = async () => {
  * @param {string} userName - the user.id
  */
 exports.getUserById = async (id) => {
+  console.log('get user by id', id);
   try {
-    const doc = await getDocFromCollection(id, 'users');
+    const doc = await db.collection('users').doc(id).get();
     if (doc.exists) {
-      return {
-        ...doc.data(),
-        id: doc.id,
-        response: getSuccessResponse(),
-      };
+      return doc.data();
     } else {
-      return errorMsg;
+      return 'Doc does not appear to exist';
     }
   } catch (error) {
-    return errorMsg;
+    return error.message;
   }
 };
 
@@ -71,7 +65,6 @@ const getUsersByUserIds = async (userNames) => {
 exports.usersByUserIdDataLoader = () => new DataLoader(getUsersByUserIds);
 
 const getUsersByBoardIds = async (boardIds) => {
-  console.log('======Get Users By Board IDs======');
   const data = await Promise.all(
     boardIds.map(
       async (boardId) =>
@@ -99,35 +92,36 @@ exports.usersByBoardIdsDataLoader = () => new DataLoader(getUsersByBoardIds);
  * @param {string} boardId - the id of the board
  * @return {object} either the User or an error response
  */
-exports.getUsersByBoardId = async (boardId) => {
-  console.log('_____Get Users By Board ID______');
-  try {
-    const boardUsers = await getFromCollectionWhere({
-      collection: 'users',
-      targetProp: 'boardIds',
-      matches: 'array-contains',
-      sourceProp: boardId,
-    });
-    console.log(`Get users for ${boardId}`);
-    return boardUsers.docs.map((user) => {
-      return {
-        ...user.data(),
-        // must include id/userName since that won't be on root since root was a board
-        id: user.id,
-      };
-    });
-  } catch (error) {
-    console.log(error);
-    return {
-      id: '',
-      response: {
-        message: error,
-        code: '500',
-        success: false,
-      },
-    };
-  }
-};
+// TODO: remove this eventually, it isn't used anymore because of data loader
+// exports.getUsersByBoardId = async (boardId) => {
+//   console.log('_____Get Users By Board ID______');
+//   try {
+//     const boardUsers = await getFromCollectionWhere({
+//       collection: 'users',
+//       targetProp: 'boardIds',
+//       matches: 'array-contains',
+//       sourceProp: boardId,
+//     });
+//     console.log(`Get users for ${boardId}`);
+//     return boardUsers.docs.map((user) => {
+//       return {
+//         ...user.data(),
+//         // must include id/userName since that won't be on root since root was a board
+//         id: user.id,
+//       };
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       id: '',
+//       response: {
+//         message: error,
+//         code: '500',
+//         success: false,
+//       },
+//     };
+//   }
+// };
 
 exports.createUser = async ({
   userName,

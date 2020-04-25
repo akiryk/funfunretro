@@ -144,8 +144,11 @@ exports.updateColumn = async (input) => {
  */
 exports.deleteColumn = async (id) => {
   const columnToDelete = db.doc(`/columns/${id}`);
+
+  // First try to get the column
+  let columnDoc;
   try {
-    const columnDoc = await columnToDelete.get();
+    columnDoc = await columnToDelete.get();
     if (!columnDoc.exists) {
       return {
         code: '400',
@@ -153,28 +156,40 @@ exports.deleteColumn = async (id) => {
         message: `column with id ${id} does not exist`,
       };
     }
-    await columnToDelete.delete();
+  } catch (error) {
+    return {
+      code: '500',
+      success: false,
+      message: `problem finding the column on the server`,
+    };
+  }
 
-    // Find and delete all comments that were in the column
+  // Now make sure there aren't any comments on the column
+  try {
     const columnComments = await admin
       .firestore()
       .collection('comments')
       .where('columnId', '==', id)
       .get();
-    let deletedCommentCount = 0;
-    columnComments.forEach(async (comment) => {
-      const commentToDelete = db.doc(`/comments/${comment.id}`);
-      ++deletedCommentCount;
-      await commentToDelete.delete();
-    });
+
+    if (columnComments.docs.length > 0) {
+      return {
+        code: '400',
+        success: false,
+        message: `you cannot delete a column that contains comments`,
+      };
+    }
+
+    await columnToDelete.delete();
+
     return {
-      code: '400',
-      success: false,
-      message: `Column ${columnId} deleted successfully along with its ${deletedCommentCount} comments`,
+      code: '200',
+      success: true,
+      message: `Column ${columnId} deleted successfully`,
     };
   } catch (error) {
     return {
-      code: '400',
+      code: '500',
       success: false,
       message: 'Unable to delete the column',
     };
