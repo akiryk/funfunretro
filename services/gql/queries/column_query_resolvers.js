@@ -2,7 +2,7 @@ const { isUserAdmin } = require('../../firebase/utils/auth_helpers');
 const {
   getQueryErrorResponse,
 } = require('../../firebase/utils/firestore_helpers');
-const { getCommentsByColumnId } = require('../../firebase/comment');
+const Comment = require('../../firebase/Comment');
 const { getColumns, getColumnById } = require('../../firebase/column');
 
 const columns = async (_, __, { user }) => {
@@ -26,7 +26,7 @@ const column = async (_, { id }, { user }) => {
 };
 
 const columnChildQueries = {
-  comments: async ({ id }) => getCommentsByColumnId(id),
+  comments: async ({ id }) => Comment.getCommentsByColumnId(id),
 };
 
 module.exports = { column, columns, columnChildQueries };

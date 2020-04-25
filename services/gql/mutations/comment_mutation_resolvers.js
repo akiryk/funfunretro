@@ -1,10 +1,4 @@
-const {
-  createComment: createComm,
-  updateComment: updateComm,
-  deleteComment: deleteComm,
-  likeComment: likeComm,
-  unlikeComment: unlikeComm,
-} = require('../../firebase/comment');
+const Comment = require('../../firebase/Comment');
 
 const { getUserById } = require('../../firebase/user');
 
@@ -14,16 +8,18 @@ const {
 } = require('../../firebase/utils/auth_helpers');
 
 const {
-  isUserMemberOfBoard,
   getMutationErrorResponse,
 } = require('../../firebase/utils/firestore_helpers');
+
+const isUserMemberOfBoard = (boardId, userBoardIds) =>
+  userBoardIds.includes(boardId);
 
 const createComment = async (_, { input }, { user }) => {
   const userProfile = await getUserById(user.userName);
   return (isUserMember(user) &&
-    isUserMemberOfBoard(userProfile, input.boardId)) ||
+    isUserMemberOfBoard(userProfile.boardIds, input.boardId)) ||
     isUserAdmin(user)
-    ? createComm(input, user.userName)
+    ? Comment.createComment(input, user.userName)
     : getMutationErrorResponse(
         'you can only comment on boards where you are a member'
       );
@@ -32,7 +28,7 @@ const createComment = async (_, { input }, { user }) => {
 const updateComment = async (_, { input }, { user }) => {
   const isAdmin = isUserAdmin(user);
   return isUserMember(user)
-    ? updateComm(input, user.userName, isAdmin)
+    ? Comment.updateComment(input, user.userName, isAdmin)
     : getMutationErrorResponse(
         'you can only comment on boards where you are a member'
       );
@@ -40,23 +36,55 @@ const updateComment = async (_, { input }, { user }) => {
 
 const deleteComment = async (_, { input }, { user }) => {
   return isUserMember(user)
-    ? deleteComm(input.id, user.userName, isUserAdmin(user))
+    ? Comment.deleteComment(input.id, user.userName, isUserAdmin(user))
     : getMutationErrorResponse('User must be logged in to delete a comment');
 };
 
 const likeComment = async (_, { input }, { user }) => {
-  return isUserMember(user) && isUserMemberOfBoard(user, input.boardId)
-    ? likeComm(input, user.userName)
-    : getMutationErrorResponse(
-        'you can only like comments on boards where you are a member'
-      );
+  if (!isUserMember(user)) {
+    return {
+      response: {
+        message: 'You must be logged in',
+        code: '400',
+        success: false,
+      },
+    };
+  }
+
+  const userProfile = await getUserById(user.userName);
+  return userProfile.boardIds.includes(input.boardId)
+    ? Comment.likeComment(input, user.userName)
+    : {
+        response: {
+          message:
+            'You are not a member of this board so can not like its comments. And, yes, this even goes for Admins',
+          code: '400',
+          success: false,
+        },
+      };
 };
 const unlikeComment = async (_, { input }, { user }) => {
-  return isUserMember(user) && isUserMemberOfBoard(user, input.boardId)
-    ? unlikeComm(input, user.userName)
-    : getMutationErrorResponse(
-        'you can only unlike comments on boards where you are a member'
-      );
+  if (!isUserMember(user)) {
+    return {
+      response: {
+        message: 'You must be logged in',
+        code: '400',
+        success: false,
+      },
+    };
+  }
+
+  const userProfile = await getUserById(user.userName);
+  return userProfile.boardIds.includes(input.boardId)
+    ? Comment.unlikeComment(input, user.userName)
+    : {
+        response: {
+          message:
+            'You are not a member of this board so can not unlike its comments. And, yes, this even goes for Admins',
+          code: '400',
+          success: false,
+        },
+      };
 };
 
 module.exports = {

@@ -11,6 +11,8 @@ const {
   getUserById, // get user by userName (id === userName)
 } = require('../../firebase/user');
 
+const Comment = require('../../firebase/Comment');
+
 const users = (_, __, { user }) => {
   return isUserAdmin(user)
     ? getUsers()
@@ -57,7 +59,7 @@ const whoAmI = async (_, __, { user }) => {
 const userChildQueries = {
   id: (root) => root.id,
   boards: async ({ id }) => getBoardsByUserName(id),
-  comments: async ({ id }) => getCommentsByUserId(id),
+  comments: async ({ id }) => Comment.getCommentsByUserId(id),
 };
 
 module.exports = { user, users, whoAmI, userChildQueries };
