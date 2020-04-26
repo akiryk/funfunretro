@@ -40,14 +40,25 @@ module.exports = {
     try {
       const comments = await db
         .collection('comments')
-        .where('userName', '==', userName)
+        .where('createdBy', '==', userName)
         .get();
-      return comments.docs.map((comment) => {
+      const userComments = comments.docs.map((comment) => {
         return {
           ...comment.data(),
           id: comment.id,
         };
       });
+      return userComments.length > 0
+        ? userComments
+        : [
+          {
+            response: {
+              message: `Womp womp... ${userName} has no comments`,
+              success: true,
+              code: '200'
+            }
+          }
+        ]
     } catch (error) {
       return getErrorResponse(error);
     }
@@ -232,7 +243,7 @@ module.exports = {
         return {
           ...getErrorResponse(
             `You can only like ${maxLikes} ${
-              maxLikes === 1 ? 'time' : 'times'
+            maxLikes === 1 ? 'time' : 'times'
             } on a board`
           ),
           userTotalLikes,

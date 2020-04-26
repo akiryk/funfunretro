@@ -1,7 +1,7 @@
 const {
   createBoard: createBoardService,
   updateBoard: updateBoardService,
-} = require('../../firebase/board');
+} = require('../../firebase/Board');
 const { isUserEditor } = require('../../firebase/utils/auth_helpers');
 const {
   getMutationErrorResponse,

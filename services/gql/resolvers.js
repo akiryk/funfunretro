@@ -21,7 +21,7 @@ const {
   user,
   users,
   userChildQueries,
-  whoAmI,
+  me,
 } = require('./queries/user_query_resolvers.js');
 
 // Mutations
@@ -64,7 +64,7 @@ module.exports = {
     comment,
     user,
     users,
-    whoAmI,
+    me,
   },
   Board: boardChildQueries,
   Column: columnChildQueries,

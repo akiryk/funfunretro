@@ -158,12 +158,19 @@ exports.Mutations = gql`
     message: String!
   }
 
+  type UserProfile {
+    userName: String
+    email: String
+    role: String
+  }
+
   type LoginResponse implements MutationResponse {
+    id: String
     code: String!
     success: Boolean!
     message: String!
     token: String
-    user: User
+    profile: UserProfile
   }
 
   type AddRoleResponse implements MutationResponse {

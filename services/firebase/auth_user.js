@@ -22,6 +22,7 @@ exports.getAuthUser = async (req) => {
     idToken = req.headers.authorization.split('Bearer ')[1];
   } else {
     console.log('No token found');
+    // return a non authorized user object
     return {
       role: '',
     };
@@ -154,12 +155,11 @@ exports.login = async (email, password) => {
     // get user record so we can access custom claims for role
     const userRecord = await admin.auth().getUser(data.user.uid);
     const role = userRecord.customClaims['role'];
-
     return {
-      user: {
-        id: userName,
-        role,
+      id: data.user.uid,
+      profile: {
         userName,
+        role,
         email,
       },
       token,

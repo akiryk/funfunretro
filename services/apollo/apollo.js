@@ -29,6 +29,7 @@ exports.server = new ApolloServer({
     loaders: {
       usersByBoardIdLoader: usersByBoardIdsDataLoader(),
       usersByUserIdLoader: usersByUserIdDataLoader(),
+      // todo: boardsByUserIdLoader
     },
   }),
   introspection: true,
